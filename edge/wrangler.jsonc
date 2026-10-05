@@ -4,10 +4,14 @@
   "main": "src/index.js",
   "compatibility_date": "2026-10-01",
   "workers_dev": false,
-  "routes": [{ "pattern": "youtubelink.gabemills.com", "custom_domain": true }],
+  "routes": [
+    { "pattern": "gmstudynotes.com", "custom_domain": true },
+    { "pattern": "www.gmstudynotes.com", "custom_domain": true },
+    { "pattern": "youtubelink.gabemills.com", "custom_domain": true }
+  ],
   // Private path to the app on the yt-notes VM: tunnel 3ffc711c-… → 127.0.0.1:8080
   "vpc_services": [{ "binding": "APP", "service_id": "01a10bff-c749-7fd0-871c-b19f8dc35492" }],
-  // Empty until gmstudyhall.com is live; then set it and add its routes below.
-  "vars": { "MAIN_HOST": "" },
+  // The main address. Every other hostname above 301s to it (empty = no redirects).
+  "vars": { "MAIN_HOST": "gmstudynotes.com" },
   "observability": { "enabled": true }
 }

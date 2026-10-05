@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Deploy GM Study Hall to a Linux VM: code + uv + Ollama (local notes model) + systemd.
+# Deploy GM Study Notes to a Linux VM: code + uv + Ollama (local notes model) + systemd.
 # Usage: ./deploy.sh [host]   (or set GMSH_HOST to the server address)
 set -euo pipefail
 HOST=${1:-${GMSH_HOST:?set GMSH_HOST to the server address, or pass it as the first argument}}
@@ -25,7 +25,7 @@ cd ~/yt-notes && ~/.local/bin/uv sync -q
 
 sudo tee /etc/systemd/system/yt-notes.service >/dev/null <<UNIT
 [Unit]
-Description=GM Study Hall
+Description=GM Study Notes
 After=network-online.target ollama.service
 
 [Service]

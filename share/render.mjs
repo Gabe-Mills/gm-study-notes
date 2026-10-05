@@ -17,8 +17,8 @@ const port = server.address().port;
 const jobs = [
   ["og", 1200, 630, "../static/og.png"],
   ["icon", 180, 180, "../static/icon-180.png"],
-  ["post", 1080, 1350, "yt-notes-instagram-post.png"],
-  ["story", 1080, 1920, "yt-notes-instagram-story.png"],
+  ["post", 1080, 1350, "gm-study-notes-instagram-post.png"],
+  ["story", 1080, 1920, "gm-study-notes-instagram-story.png"],
 ];
 const b = await chromium.launch({ channel: "chrome", args: ["--use-angle=metal"] });
 for (const [layout, w, h, out] of jobs) {

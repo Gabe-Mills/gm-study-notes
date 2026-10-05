@@ -1,10 +1,10 @@
-# GM Study Hall
+# GM Study Notes
 
 **Watch less. Learn more.** Paste a YouTube link, join the queue, and get college-style study notes as a PDF, or just the transcript.
 
-Live at **[gmstudyhall.com](https://gmstudyhall.com)** · by Gabe Mills
+Live at **[gmstudynotes.com](https://gmstudynotes.com)** · by Gabe Mills
 
-![GM Study Hall home page](docs/home.png)
+![GM Study Notes home page](docs/home.png)
 
 ## What it does
 
@@ -22,7 +22,7 @@ Live at **[gmstudyhall.com](https://gmstudyhall.com)** · by Gabe Mills
 ## How it works
 
 ```
-browser ──► Cloudflare Worker (gmstudyhall.com) ──► Cloudflare Tunnel ──► VM (CPU only)
+browser ──► Cloudflare Worker (gmstudynotes.com) ──► Cloudflare Tunnel ──► VM (CPU only)
                                                                          ├─ FastAPI app (app.py): queue, tickets, files
                                                                          ├─ youtube-transcript-api / yt-dlp + faster-whisper
                                                                          ├─ Ollama · Qwen3.6-35B-A3B (notes)

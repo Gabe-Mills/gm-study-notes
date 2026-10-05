@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>GM Study Hall · Watch less. Learn more.</title>
+<title>GM Study Notes · Watch less. Learn more.</title>
 <meta name="description" content="Paste a YouTube link, join the queue, get study notes or a transcript.">
 <meta name="theme-color" content="#0f0a09">
 <!-- Link previews (iMessage, Discord, Slack, X, Instagram DMs) -->
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="GM Study Hall">
-<meta property="og:title" content="GM Study Hall · Watch less. Learn more.">
+<meta property="og:site_name" content="GM Study Notes">
+<meta property="og:title" content="GM Study Notes · Watch less. Learn more.">
 <meta property="og:description" content="Paste a YouTube link. Get college-style study notes with a practice quiz, as a PDF. Free.">
-<meta property="og:url" content="https://youtubelink.gabemills.com/">
-<meta property="og:image" content="https://youtubelink.gabemills.com/static/og.png">
+<meta property="og:url" content="https://gmstudynotes.com/">
+<meta property="og:image" content="https://gmstudynotes.com/static/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="GM Study Hall: turn any YouTube video into study notes">
+<meta property="og:image:alt" content="GM Study Notes: turn any YouTube video into study notes">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="GM Study Hall · Watch less. Learn more.">
+<meta name="twitter:title" content="GM Study Notes · Watch less. Learn more.">
 <meta name="twitter:description" content="Paste a YouTube link. Get study notes with a practice quiz, as a PDF.">
-<meta name="twitter:image" content="https://youtubelink.gabemills.com/static/og.png">
+<meta name="twitter:image" content="https://gmstudynotes.com/static/og.png">
 <link rel="apple-touch-icon" href="/static/icon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='8' fill='%23e5322d'/%3E%3Cpath d='M14.8 12.5A5 5 0 1 0 16.2 16.4H12.6' fill='none' stroke='%23fff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18.6 21V11.2l3.3 5.2 3.3-5.2V21' fill='none' stroke='%23fff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -465,9 +465,9 @@
 
 <div class="wrap">
   <nav>
-    <a class="brand" href="/" aria-label="GM Study Hall home">
+    <a class="brand" href="/" aria-label="GM Study Notes home">
       <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="8" fill="#e5322d"/><path d="M14.8 12.5A5 5 0 1 0 16.2 16.4H12.6" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.6 21V11.2l3.3 5.2 3.3-5.2V21" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span><b>GM</b> Study Hall</span>
+      <span><b>GM</b> Study Notes</span>
     </a>
     <div class="nav-r">
       <button class="live share-btn" id="shareBtn" type="button"><svg><use href="#i-share"/></svg>Share</button>
@@ -636,7 +636,7 @@
     </div>
   </section>
 
-  <div class="foot"><span>GM Study Hall</span><span>AI notes can be wrong. Check the video.</span></div>
+  <div class="foot"><span>GM Study Notes</span><span>AI notes can be wrong. Check the video.</span></div>
 </div>
 <div class="toast" id="toast" role="status"></div>
 
@@ -714,7 +714,7 @@ function reset() {
   if (location.pathname !== "/") history.pushState(null, "", "/");
   document.body.classList.remove("on-q"); $("qpage").classList.add("hidden");
   $("loader").className = "loader";
-  document.title = "GM Study Hall · Watch less. Learn more.";
+  document.title = "GM Study Notes · Watch less. Learn more.";
   refreshQueue(); loadReviews();
 }
 addEventListener("popstate", () => location.reload());
@@ -886,7 +886,7 @@ function render(t) {
   if (t.status === "waiting") {
     qStart = t.wait; yourWait = t.wait + t.needs; yourAt = Date.now();
     body.innerHTML = `<div class="wait-row"><b class="num">#${t.position}</b><span>${t.position === 1 ? "You're next." : "in line."} Keep this page open.</span></div>`;
-    document.title = `#${t.position} in line · GM Study Hall`;
+    document.title = `#${t.position} in line · GM Study Notes`;
   } else if (t.status === "running") {
     leftVal = t.left; leftAt = Date.now();
     const [now, sub] = stepOf(t.stage || "");
@@ -897,7 +897,7 @@ function render(t) {
     $("qSub").textContent = `${Math.round(pct * 100)}% · ${t.stage || "Starting"} · done around ${finish}`;
     body.innerHTML = `<div class="timeline" style="--n:${steps.length}">${steps.map((s, i) =>
       `<span class="tl ${now < 0 ? "" : i < now ? "done" : i === now ? "now" : ""}">${s}${i === now ? sub : ""}</span>`).join("")}</div>`;
-    document.title = `${Math.round(pct * 100)}% · GM Study Hall`;
+    document.title = `${Math.round(pct * 100)}% · GM Study Notes`;
   } else if (t.status === "ready") {
     if (prev !== "ready") {
       expiresAt = Date.now() + t.expires_in * 1000;
@@ -923,7 +923,7 @@ function render(t) {
       if (!t.reviewed) showReview();
     } else expiresAt = Date.now() + t.expires_in * 1000;
     $("qSub").textContent = "Then it's deleted for good.";
-    document.title = "✓ Ready · GM Study Hall";
+    document.title = "✓ Ready · GM Study Notes";
   } else {
     clearInterval(pollTimer);
     const err = t.status === "error";
@@ -932,7 +932,7 @@ function render(t) {
       <button class="btn btn-primary" id="again"><svg><use href="#i-plus"/></svg>${err ? "Try again" : "Add another"}</button></div>`;
     $("again").onclick = reset;
     $("tLeave").classList.add("hidden");
-    document.title = "GM Study Hall · Watch less. Learn more.";
+    document.title = "GM Study Notes · Watch less. Learn more.";
   }
 }
 function paintClock() {
@@ -1010,7 +1010,7 @@ loadReviews();
 
 /* share: the phone/browser share sheet, or copy the link */
 $("shareBtn").onclick = async () => {
-  const data = { title: "GM Study Hall", text: "Turn any YouTube video into study notes with a practice quiz.", url: location.origin + "/" };
+  const data = { title: "GM Study Notes", text: "Turn any YouTube video into study notes with a practice quiz.", url: location.origin + "/" };
   try { if (navigator.share) { await navigator.share(data); return; } } catch (e) { if (e.name === "AbortError") return; }
   try { await navigator.clipboard.writeText(data.url); toast("Link copied"); } catch { toast(data.url); }
 };

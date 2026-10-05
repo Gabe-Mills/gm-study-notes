@@ -1,4 +1,4 @@
-"""GM Study Hall: a one-at-a-time queue that turns YouTube videos into transcripts or study notes.
+"""GM Study Notes: a one-at-a-time queue that turns YouTube videos into transcripts or study notes.
 
 People paste a link, pick Transcript or Notes, and join the queue. A single worker
 handles one ticket at a time (notes use every CPU core). Finished files sit in a
@@ -62,7 +62,7 @@ def purge_stored_docs():
 
 
 purge_stored_docs()
-app = FastAPI(title="GM Study Hall")
+app = FastAPI(title="GM Study Notes")
 tickets: dict[str, dict] = {}
 queue: list[str] = []
 lock = threading.RLock()

@@ -868,7 +868,7 @@ def render_html(nb: dict, theme: str = "color") -> str:
 {"<h2>Numbers from the video</h2><table><tr><th>Number</th><th>What it is</th><th>When</th></tr>" + numbers + "</table>" if numbers else ""}
 {"<div class='newpage'></div><h2>Practice quiz</h2><p class='meta'>Answer from memory first, then check the next page.</p><ol class='quiz'>" + quiz + "</ol>" if quiz else ""}
 {"<div class='newpage'></div><h2>Answers</h2><ol class='answers'>" + key + "</ol>" if key else ""}
-<div class="foot">Made by GM Study Hall (gmstudyhall.com) from {'the video\'s YouTube subtitles' if v.get('source') == 'captions' else 'listening to the video'}. AI notes can contain mistakes, so check anything important against the video. · {url}</div>
+<div class="foot">Made by GM Study Notes (gmstudynotes.com) from {'the video\'s YouTube subtitles' if v.get('source') == 'captions' else 'listening to the video'}. AI notes can contain mistakes, so check anything important against the video. · {url}</div>
 </body></html>"""
 
 
