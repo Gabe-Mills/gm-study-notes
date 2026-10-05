@@ -1,0 +1,155 @@
+<!doctype html>
+<!-- Share-image template. Rendered by share/render.mjs at an exact size:
+     ?layout=og (1200x630) | post (1080x1350) | story (1080x1920) | icon (180x180) -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }</script>
+<style>
+  :root { --text: oklch(0.965 0.008 60); --muted: oklch(0.78 0.014 45); --accent: oklch(0.67 0.2 28); --accent-hi: oklch(0.76 0.17 40); --ok: oklch(0.8 0.13 150); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #070303; color: var(--text); font-family: Inter, sans-serif; -webkit-font-smoothing: antialiased; }
+  #fog { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 110% 90% at 60% 45%, transparent 50%, rgba(5, 2, 2, 0.85)); }
+  .stage { position: absolute; inset: 0; }
+  .brand { display: flex; align-items: center; gap: .45em; font-weight: 650; letter-spacing: -0.01em; }
+  .brand svg { width: 1.6em; height: 1.6em; }
+  .brand b { font-weight: 750; color: var(--accent-hi); }
+  .brand span { font-weight: 500; }
+  h1 { font-weight: 650; letter-spacing: -0.048em; line-height: .93; }
+  h1 em { display: block; font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: var(--accent-hi); text-shadow: 0 0 40px oklch(0.67 0.2 28 / 0.4); }
+  .sub { color: var(--muted); line-height: 1.4; }
+  .url { display: inline-flex; align-items: center; gap: .55em; padding: .55em 1em; border-radius: 99px; background: rgba(30, 18, 16, .7);
+    border: 1px solid rgba(255, 240, 230, .14); font-weight: 600; color: var(--text); backdrop-filter: blur(10px); }
+  .url i { width: .5em; height: .5em; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 .2em oklch(0.8 0.13 150 / 0.2); }
+  .chips { display: flex; flex-wrap: wrap; gap: .5em; }
+  .chips span { padding: .5em .9em; border-radius: 99px; background: rgba(30, 18, 16, .65); border: 1px solid rgba(255, 240, 230, .12); color: var(--muted); font-weight: 500; }
+  .chips b { color: var(--accent-hi); margin-right: .35em; }
+
+  /* the demo page, same look as the PDF */
+  .paper { position: absolute; background: #faf6f4; color: #1d1716; border-radius: 16px; padding: 26px 26px 22px; font-size: 15px; line-height: 1.5;
+    box-shadow: 0 2px 4px rgba(0,0,0,.4), 0 40px 80px -24px rgba(0,0,0,.9), 0 60px 140px -40px rgba(200,40,20,.45); }
+  .pd-head { display: flex; gap: 13px; align-items: center; padding-bottom: 13px; border-bottom: 2px solid #e5322d; }
+  .pd-thumb { width: 84px; height: 52px; flex: none; border-radius: 7px; background: linear-gradient(160deg, #23302b, #121a17); overflow: hidden; }
+  .pd-thumb svg { width: 100%; height: 100%; display: block; }
+  .pd-eye { font-size: 10px; letter-spacing: .14em; font-weight: 700; color: #e5322d; }
+  .pd-title { font-size: 20px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
+  .pd-chips { display: flex; gap: 5px; margin-top: 6px; }
+  .pd-chips span { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: #efe9e7; color: #5a4f4c; }
+  .pd-chips span:first-child { background: #fde9e6; color: #e5322d; font-weight: 600; }
+  .pd-short { margin-top: 15px; background: #fdeeeb; border-left: 3px solid #e5322d; border-radius: 0 9px 9px 0; padding: 11px 14px; }
+  .lbl { display: block; font-size: 10px; letter-spacing: .12em; color: #e5322d; text-transform: uppercase; margin-bottom: 3px; font-weight: 700; }
+  .pd-cornell { display: grid; grid-template-columns: 38% 1fr; gap: 13px; margin-top: 14px; }
+  .pd-cornell aside { background: #f2edeb; border-radius: 9px; padding: 11px 12px; font-size: 13.5px; color: #4a403d; }
+  .pd-cornell aside ol { padding-left: 16px; display: grid; gap: 5px; }
+  .pd-cornell ul { list-style: none; display: grid; gap: 9px; }
+  .pd-cornell ul li { display: grid; grid-template-columns: 42px 1fr; gap: 7px; }
+  .ts { font: 600 11.5px ui-monospace, "SF Mono", monospace; color: #e5322d; background: #fde9e6; border-radius: 4px; padding: 2px 4px; height: fit-content; text-align: center; }
+  .pd-formula { margin-top: 14px; border: 1px solid #ebe3e0; border-radius: 10px; padding: 12px 14px; font-family: "Instrument Serif", serif; font-size: 27px; }
+  .pd-formula sup { font-size: .6em; }
+  .pd-quiz { margin-top: 14px; border: 1px solid #ebe3e0; border-radius: 10px; padding: 11px 14px; font-size: 14px; }
+  .pd-quiz .lbl { color: #8a7f7c; }
+  .pd-quiz em { font-style: normal; color: #1b7a3a; font-weight: 700; }
+  .orbit { position: absolute; overflow: visible; }
+
+  /* layouts */
+  body.og .brand { position: absolute; left: 64px; top: 56px; font-size: 26px; }
+  body.og h1 { position: absolute; left: 64px; top: 150px; font-size: 104px; }
+  body.og .sub { position: absolute; left: 66px; top: 380px; width: 470px; font-size: 24px; }
+  body.og .url { position: absolute; left: 64px; bottom: 56px; font-size: 20px; }
+  body.og .paper { width: 460px; right: 64px; top: 70px; transform: rotate(4deg); font-size: 13px; padding: 20px 22px 18px; }
+  body.og .chips, body.og .pd-quiz { display: none; }
+  body.og .pd-title { font-size: 18px; } body.og .pd-formula { font-size: 22px; padding: 9px 12px; }
+  body.og .orbit { width: 560px; height: 560px; right: 20px; top: 30px; }
+
+  body.post .brand { position: absolute; left: 80px; top: 76px; font-size: 34px; }
+  body.post h1 { position: absolute; left: 80px; top: 170px; font-size: 150px; }
+  body.post .sub { position: absolute; left: 82px; top: 495px; width: 760px; font-size: 32px; }
+  body.post .paper { width: 620px; left: 230px; top: 598px; transform: rotate(-4deg); font-size: 16px; }
+  body.post .orbit { width: 760px; height: 760px; right: -170px; top: 470px; }
+  body.post .chips { position: absolute; left: 80px; bottom: 150px; font-size: 24px; }
+  body.post .url { position: absolute; left: 80px; bottom: 70px; font-size: 28px; }
+
+  body.story .brand { position: absolute; left: 80px; top: 150px; font-size: 38px; }
+  body.story h1 { position: absolute; left: 80px; top: 270px; font-size: 168px; }
+  body.story .sub { position: absolute; left: 82px; top: 640px; width: 860px; font-size: 38px; }
+  body.story .paper { width: 760px; left: 160px; top: 840px; transform: rotate(-3.5deg); font-size: 18px; }
+  body.story .orbit { width: 900px; height: 900px; right: -230px; top: 700px; }
+  body.story .chips { position: absolute; left: 80px; bottom: 260px; font-size: 28px; }
+  body.story .url { position: absolute; left: 80px; bottom: 150px; font-size: 34px; }
+
+  body.icon .stage > :not(.mark) { display: none; }
+  body.icon .mark { position: absolute; inset: 0; display: grid; place-items: center; }
+  body.icon .mark svg { width: 128px; height: 128px; filter: drop-shadow(0 8px 20px rgba(229, 50, 45, .6)); }
+  body:not(.icon) .mark { display: none; }
+</style>
+</head>
+<body>
+<canvas id="fog"></canvas>
+<div class="vignette"></div>
+<div class="stage">
+  <div class="mark"><svg viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" rx="8" fill="#e5322d"/><path d="M14.8 12.5A5 5 0 1 0 16.2 16.4H12.6" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.6 21V11.2l3.3 5.2 3.3-5.2V21" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="brand"><svg viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" rx="8" fill="#e5322d"/><path d="M14.8 12.5A5 5 0 1 0 16.2 16.4H12.6" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.6 21V11.2l3.3 5.2 3.3-5.2V21" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>GM</b> Study Hall</span></div>
+  <h1>Watch less.<em>Learn more.</em></h1>
+  <p class="sub">Turn any YouTube video into study notes with a practice quiz. Free, as a PDF.</p>
+  <svg class="orbit" id="orbit" viewBox="0 0 220 220"></svg>
+  <div class="paper">
+    <div class="pd-head">
+      <div class="pd-thumb"><svg viewBox="0 0 74 46"><path d="M6 38 C 22 38, 34 30, 44 18 S 62 6, 70 5" fill="none" stroke="#ff6b5b" stroke-width="2.2" stroke-linecap="round"/><path d="M30 34 L58 8" stroke="#f6e7c8" stroke-width="1.4" stroke-dasharray="3 3"/><circle cx="44" cy="18" r="2.6" fill="#f6e7c8"/></svg></div>
+      <div><div class="pd-eye">STUDY NOTES</div><div class="pd-title">Derivatives &amp; the power rule</div>
+        <div class="pd-chips"><span>Calculus I</span><span>Beginner</span><span>Lesson</span></div></div>
+    </div>
+    <div class="pd-short"><span class="lbl">The short version</span>A derivative is the slope of a curve at one exact moment. For powers of x, the power rule gets it in one step.</div>
+    <div class="pd-cornell">
+      <aside><span class="lbl">Quiz yourself</span><ol><li>What does f′(x) measure?</li><li>How is it defined?</li></ol></aside>
+      <ul>
+        <li><span class="ts">3:52</span><span>A <b>secant</b> becomes the <b>tangent</b> as the gap shrinks to 0.</span></li>
+        <li><span class="ts">9:05</span><span>A <b>constant</b> has derivative <b>0</b>.</span></li>
+      </ul>
+    </div>
+    <div class="pd-formula"><i>d</i>/<i>dx</i> <i>x</i><sup><i>n</i></sup> = <i>n</i> · <i>x</i><sup><i>n</i>−1</sup></div>
+    <div class="pd-quiz"><span class="lbl">Practice quiz</span>Derivative of x<sup>5</sup>? <em>→ 5x<sup>4</sup></em></div>
+  </div>
+  <div class="chips"><span><b>✦</b>Notes in minutes</span><span><b>✦</b>Practice quiz</span><span><b>✦</b>Free PDF</span></div>
+  <span class="url"><i></i>gmstudyhall.com</span>
+</div>
+
+<script>
+// Same Orbit Bundle rings as the site's loader, frozen at one handsome pose.
+const layout = new URLSearchParams(location.search).get("layout") || "og";
+document.body.className = layout;
+(() => {
+  const g = document.getElementById("orbit"), N = 22, K = 0.29, spin = 38, spread = 96, axis = 30;
+  for (let i = 0; i < N; i++) {
+    const t = i / (N - 1), r = (343 + (284 - 343) * t) * K, cx = 110 + 19 * t * K, cy = 110 - 29 * t * K;
+    const e = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+    e.setAttribute("cx", cx); e.setAttribute("cy", cy); e.setAttribute("ry", r);
+    e.setAttribute("rx", r * Math.abs(Math.cos((spin + spread * t) * Math.PI / 180)));
+    e.setAttribute("transform", `rotate(${axis} ${cx} ${cy})`);
+    e.setAttribute("fill", "none"); e.setAttribute("stroke-width", "1.1"); e.setAttribute("vector-effect", "non-scaling-stroke");
+    e.setAttribute("stroke", `color-mix(in oklch, oklch(0.7 0.2 30) ${Math.round((1 - t) * 100)}%, oklch(0.95 0.03 60))`);
+    e.setAttribute("stroke-opacity", "0.9");
+    g.appendChild(e);
+  }
+})();
+</script>
+<script type="module">
+// The site's own volumetric fog, rendered once at full resolution.
+import * as THREE from "three";
+const frag = await (await fetch("fog.frag")).text();
+const canvas = document.getElementById("fog");
+const renderer = new THREE.WebGLRenderer({ canvas, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(innerWidth, innerHeight, false);
+const light = { og: [0.72, 0.62], post: [0.66, 0.42], story: [0.64, 0.42], icon: [0.5, 0.5] }[document.body.className] || [0.7, 0.5];
+const uniforms = { uT: { value: 47 }, uRes: { value: new THREE.Vector2(innerWidth, innerHeight) }, uLight: { value: new THREE.Vector2(...light) },
+                   uCam: { value: new THREE.Vector2(0, 0) }, uScroll: { value: 0 } };
+const mat = new THREE.ShaderMaterial({ uniforms, defines: { STEPS: 48, OCT: 5 },
+  vertexShader: "varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}", fragmentShader: frag });
+const scene = new THREE.Scene(); scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
+renderer.render(scene, new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1));
+await document.fonts.ready;
+document.body.dataset.ready = "1";
+</script>
+</body>
+</html>

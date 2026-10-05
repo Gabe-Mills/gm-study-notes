@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GM Study Hall · Watch less. Learn more.</title>
+<meta name="description" content="Paste a YouTube link, join the queue, get study notes or a transcript.">
+<meta name="theme-color" content="#0f0a09">
+<!-- Link previews (iMessage, Discord, Slack, X, Instagram DMs) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GM Study Hall">
+<meta property="og:title" content="GM Study Hall · Watch less. Learn more.">
+<meta property="og:description" content="Paste a YouTube link. Get college-style study notes with a practice quiz, as a PDF. Free.">
+<meta property="og:url" content="https://youtubelink.gabemills.com/">
+<meta property="og:image" content="https://youtubelink.gabemills.com/static/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GM Study Hall: turn any YouTube video into study notes">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GM Study Hall · Watch less. Learn more.">
+<meta name="twitter:description" content="Paste a YouTube link. Get study notes with a practice quiz, as a PDF.">
+<meta name="twitter:image" content="https://youtubelink.gabemills.com/static/og.png">
+<link rel="apple-touch-icon" href="/static/icon-180.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='8' fill='%23e5322d'/%3E%3Cpath d='M14.8 12.5A5 5 0 1 0 16.2 16.4H12.6' fill='none' stroke='%23fff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18.6 21V11.2l3.3 5.2 3.3-5.2V21' fill='none' stroke='%23fff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+<style>
+  :root {
+    --bg: oklch(0.14 0.012 28);
+    --surface-3: oklch(0.3 0.016 28);
+    --line: oklch(0.98 0.01 40 / 0.08);
+    --line-2: oklch(0.98 0.01 40 / 0.15);
+    --text: oklch(0.965 0.008 60);
+    --muted: oklch(0.77 0.014 45);
+    --faint: oklch(0.6 0.014 40);
+    --accent: oklch(0.67 0.2 28);
+    --accent-hi: oklch(0.76 0.17 40);
+    --accent-lo: oklch(0.67 0.2 28 / 0.16);
+    --ok: oklch(0.8 0.13 150);
+    --gold: oklch(0.85 0.14 80);
+    --r-xl: 24px; --r-lg: 16px; --r-md: 12px;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+    --shadow: 0 1px 2px -1px oklch(0.05 0.01 28 / 0.6), 0 8px 20px -6px oklch(0.05 0.01 28 / 0.5), 0 30px 60px -16px oklch(0.05 0.01 28 / 0.45);
+    --hi: inset 0 1px 0 oklch(1 0 0 / 0.08);
+    --glass: oklch(0.19 0.014 28 / 0.62);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body, h1, h2, h3, p, ul, ol { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { background: var(--bg); color: var(--text); font: 400 16px/1.55 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; overflow-x: hidden; }
+  ::selection { background: oklch(0.67 0.2 28 / 0.35); }
+  a { color: inherit; }
+  button, input, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 2px; border-radius: 8px; }
+  .num { font-variant-numeric: tabular-nums; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .hidden { display: none !important; }
+
+  /* ---------- background layers: gradient · 3D scene · haze · vignette · grain ---------- */
+  .l-base { position: fixed; inset: 0; z-index: -5;
+    background: radial-gradient(1100px 700px at 75% 35%, oklch(0.24 0.07 28), transparent 70%),
+                radial-gradient(900px 600px at 0% 100%, oklch(0.2 0.05 20), transparent 70%),
+                linear-gradient(180deg, oklch(0.15 0.015 28), oklch(0.11 0.01 28)); }
+  #three { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -4; image-rendering: auto; filter: blur(0.6px) saturate(1.05); opacity: 0; transition: opacity 1.6s var(--ease-out); }
+  #three.on { opacity: 1; }
+  .l-haze { position: fixed; inset: 0; z-index: -3; pointer-events: none;
+    background: linear-gradient(90deg, oklch(0.12 0.012 28 / 0.75) 0%, oklch(0.12 0.012 28 / 0.35) 38%, transparent 60%); }
+  .l-vignette { position: fixed; inset: 0; z-index: -2; pointer-events: none; background: radial-gradient(ellipse 120% 90% at 55% 45%, transparent 55%, oklch(0.08 0.01 28 / 0.85)); }
+
+  .wrap { width: min(1240px, 100% - 48px); margin: 0 auto; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 17px; letter-spacing: -0.01em; text-decoration: none; }
+  .brand b { font-weight: 750; color: var(--accent-hi); letter-spacing: 0.01em; }
+  .brand svg { width: 30px; height: 30px; }
+  .live { display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px; border-radius: 99px; background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px oklch(0.8 0.13 150 / 0.2); animation: blink 2s var(--ease-quart) infinite; }
+  @keyframes blink { 50% { opacity: .35; } }
+
+  /* ---------- hero ---------- */
+  .hero { min-height: calc(100vh - 80px); display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: 48px; align-items: center; padding: 10px 0 70px; }
+  h1 { font-size: clamp(58px, 8.6vw, 124px); line-height: 0.93; letter-spacing: -0.048em; font-weight: 650; }
+  h1 em { display: block; font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: var(--accent-hi);
+    text-shadow: 0 0 40px oklch(0.67 0.2 28 / 0.35); }
+  .sub { font-size: 19px; color: var(--muted); margin-top: 22px; }
+
+  .card { background: var(--glass); backdrop-filter: blur(20px) saturate(1.2); -webkit-backdrop-filter: blur(20px) saturate(1.2);
+    border: 1px solid var(--line-2); border-radius: var(--r-xl); box-shadow: var(--shadow), var(--hi); }
+  .join { margin-top: 30px; padding: 10px; display: grid; gap: 10px; }
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: oklch(0.98 0.01 40 / 0.05); }
+  .seg label { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 11px; cursor: pointer;
+    font-weight: 600; font-size: 15px; color: var(--muted); transition: color 160ms, background-color 200ms var(--ease-quart); }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg label:has(input:checked) { background: var(--surface-3); color: var(--text); box-shadow: var(--hi), 0 2px 8px oklch(0.05 0.01 28 / 0.5); }
+  .seg label:has(input:focus-visible) { outline: 2px solid var(--accent-hi); }
+  .seg svg { width: 17px; height: 17px; }
+  .field { display: flex; align-items: center; gap: 8px; padding: 4px 4px 4px 14px; border-radius: 14px; background: oklch(0.98 0.01 40 / 0.05); border: 1px solid transparent; transition: border-color 160ms; }
+  .field:focus-within { border-color: oklch(0.67 0.2 28 / 0.6); }
+  .field svg.ic { width: 19px; height: 19px; color: var(--faint); flex: none; }
+  .field input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; padding: 12px 2px; font-size: 16px; }
+  .field input::placeholder { color: var(--faint); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border: 0; cursor: pointer; border-radius: var(--r-md); font-weight: 600; font-size: 15px;
+    padding: 12px 18px; white-space: nowrap; text-decoration: none; transition: background-color 150ms var(--ease-quart), opacity 150ms, translate 180ms var(--ease-quart); }
+  .btn:active { translate: 0 1px; }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+  .btn-primary { background: var(--accent); color: oklch(0.99 0.005 40); box-shadow: 0 1px 0 oklch(1 0 0 / 0.22) inset, 0 10px 30px -10px oklch(0.67 0.2 28 / 0.85); }
+  .btn-primary:hover:not(:disabled) { background: var(--accent-hi); }
+  .btn-big { padding: 16px 20px; font-size: 16px; border-radius: 14px; }
+  .btn-ghost { background: oklch(0.98 0.01 40 / 0.07); border: 1px solid var(--line); font-weight: 500; font-size: 14px; padding: 10px 14px; }
+  .btn-ghost:hover:not(:disabled) { background: oklch(0.98 0.01 40 / 0.12); }
+  .btn-icon { padding: 10px; }
+  .under { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; padding: 0 6px; flex-wrap: wrap; }
+  .switch { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); cursor: pointer; user-select: none; }
+  .switch input { appearance: none; width: 34px; height: 20px; border-radius: 99px; background: oklch(0.98 0.01 40 / 0.13); position: relative; cursor: pointer; transition: background-color 160ms; }
+  .switch input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--text); transition: translate 220ms var(--ease-out); }
+  .switch input:checked { background: var(--accent); }
+  .switch input:checked::after { translate: 14px 0; }
+  .wait-hint { font-size: 14px; color: var(--faint); }
+
+  /* ---------- ticket ---------- */
+  .ticket { margin-top: 30px; padding: 22px; }
+  .t-head { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 14px; align-items: center; }
+  .t-head img { width: 96px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 9px; background: oklch(0.25 0.015 28); display: block; }
+  .t-head b { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 15px; line-height: 1.35; }
+  .t-head small { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; color: var(--faint); font-size: 13px; }
+  .tag { padding: 2px 8px; border-radius: 99px; background: var(--accent-lo); color: var(--accent-hi); font-weight: 600; font-size: 12px; }
+  .x { background: none; border: 0; color: var(--faint); cursor: pointer; padding: 6px; border-radius: 8px; font-size: 13px; }
+  .x:hover { color: var(--text); background: oklch(0.98 0.01 40 / 0.06); }
+  .t-body { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line); }
+
+  .place { display: flex; align-items: flex-end; gap: 18px; }
+  .place .big { font-size: 92px; font-weight: 650; letter-spacing: -0.05em; line-height: 0.85; }
+  .place .big span { color: var(--accent-hi); font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; letter-spacing: -0.02em; margin-right: 2px; }
+  .place .lbl { padding-bottom: 6px; color: var(--muted); }
+  .place .lbl b { display: block; color: var(--text); font-size: 20px; letter-spacing: -0.015em; }
+  .line-dots { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; }
+  .line-dots i { width: 14px; height: 14px; border-radius: 50%; background: oklch(0.98 0.01 40 / 0.14); }
+  .line-dots i.work { background: var(--ok); box-shadow: 0 0 12px oklch(0.8 0.13 150 / 0.6); animation: blink 1.6s infinite; }
+  .line-dots i.you { background: var(--accent); box-shadow: 0 0 0 3px oklch(0.67 0.2 28 / 0.3), 0 0 16px oklch(0.67 0.2 28 / 0.7); }
+  .legend { display: flex; gap: 16px; margin-top: 10px; font-size: 12.5px; color: var(--faint); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; } .legend i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+  .work { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 26px; align-items: center; }
+  .ring { position: relative; width: 132px; height: 132px; }
+  .ring svg { width: 100%; height: 100%; rotate: -90deg; }
+  .ring circle { fill: none; stroke-width: 9; }
+  .ring .track { stroke: oklch(0.98 0.01 40 / 0.08); }
+  .ring .bar { stroke: url(#ringGrad); stroke-linecap: round; transition: stroke-dashoffset 900ms var(--ease-out); filter: drop-shadow(0 0 8px oklch(0.67 0.2 28 / 0.6)); }
+  .ring .mid { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; font-size: 30px; font-weight: 650; letter-spacing: -0.03em; }
+  .ring .mid small { font-size: 12px; color: var(--faint); font-weight: 500; letter-spacing: 0; display: block; margin-top: 2px; }
+  .big-time { font-size: clamp(30px, 3.6vw, 42px); font-weight: 650; letter-spacing: -0.035em; line-height: 1.05; }
+  .big-time em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; color: var(--accent-hi); letter-spacing: -0.01em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 99px; font-size: 13px; color: var(--faint); border: 1px solid var(--line); }
+  .chip .d { width: 7px; height: 7px; border-radius: 50%; background: oklch(0.98 0.01 40 / 0.2); }
+  .chip.done { color: var(--muted); } .chip.done .d { background: var(--ok); }
+  .chip.now { color: var(--text); border-color: oklch(0.67 0.2 28 / 0.55); background: var(--accent-lo); }
+  .chip.now .d { background: var(--accent); animation: blink 1.2s infinite; }
+
+  .files { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .end-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .gone { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .gone b { font-size: 20px; letter-spacing: -0.015em; }
+  .gone p { color: var(--faint); font-size: 14px; }
+  .err { color: oklch(0.88 0.06 30); }
+
+  .review { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+  .review h3 { font-size: 16px; font-weight: 600; }
+  .stars-in { display: flex; gap: 4px; }
+  .stars-in button { background: none; border: 0; cursor: pointer; padding: 2px; color: oklch(0.98 0.01 40 / 0.2); transition: color 120ms, scale 160ms var(--ease-out); }
+  .stars-in button:hover { scale: 1.12; }
+  .stars-in button.on { color: var(--gold); }
+  .stars-in svg { width: 30px; height: 30px; }
+  .review input, .review textarea { width: 100%; background: oklch(0.98 0.01 40 / 0.05); border: 1px solid var(--line); border-radius: 12px; padding: 11px 13px; outline: 0; font-size: 15px; resize: vertical; }
+  .review input:focus, .review textarea:focus { border-color: oklch(0.67 0.2 28 / 0.6); }
+  .review .row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+
+  [data-in] { animation: rise 900ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 90ms + 100ms); }
+  @keyframes rise { from { opacity: 0; transform: translateY(20px); } }
+  .pop { animation: rise 520ms var(--ease-out) both; }
+
+  /* ---------- sections ---------- */
+  section { padding: 90px 0 0; }
+  .s-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .s-head h2 { font-size: clamp(34px, 4.4vw, 56px); letter-spacing: -0.04em; line-height: 1; font-weight: 650; }
+  .s-head h2 em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; color: var(--accent-hi); }
+  .avg { display: flex; align-items: center; gap: 12px; }
+  .avg b { font-size: 44px; letter-spacing: -0.04em; font-weight: 650; }
+  .avg span { color: var(--faint); font-size: 14px; }
+  .stars { display: inline-flex; gap: 2px; color: var(--gold); }
+  .stars svg { width: 16px; height: 16px; }
+  .stars .off { color: oklch(0.98 0.01 40 / 0.18); }
+  .wall { columns: 3 300px; column-gap: 14px; margin-top: 30px; }
+  .rv { break-inside: avoid; margin-bottom: 14px; padding: 20px; transition: translate 260ms var(--ease-out), border-color 200ms; }
+  .rv:hover { translate: 0 -2px; border-color: oklch(0.98 0.01 40 / 0.22); }
+  .rv p { margin: 10px 0 14px; font-size: 16px; line-height: 1.55; color: oklch(0.92 0.01 50); }
+  .rv footer { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--faint); }
+  .rv .av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 650; font-size: 13px; color: var(--text);
+    background: linear-gradient(135deg, oklch(0.55 0.16 28), oklch(0.4 0.1 20)); }
+  .rv footer b { color: var(--text); font-weight: 600; }
+  .empty { margin-top: 30px; padding: 30px; text-align: center; color: var(--faint); }
+
+  .steps3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 30px; }
+  .st { padding: 24px; display: flex; gap: 16px; align-items: center; }
+  .st .n { width: 44px; height: 44px; flex: none; border-radius: 14px; display: grid; place-items: center; background: var(--accent-lo); color: var(--accent-hi); font-weight: 700; }
+  .st b { font-size: 18px; letter-spacing: -0.015em; display: block; }
+  .st span { color: var(--faint); font-size: 14px; }
+  .foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 90px; padding: 28px 0 44px; border-top: 1px solid var(--line); color: var(--faint); font-size: 13px; }
+
+  .toast { position: fixed; left: 50%; bottom: 28px; translate: -50% 16px; opacity: 0; pointer-events: none; z-index: 30; padding: 11px 17px; border-radius: 12px;
+    background: var(--surface-3); border: 1px solid var(--line-2); box-shadow: var(--shadow); font-size: 14px; transition: opacity 160ms var(--ease-in), translate 160ms var(--ease-in); }
+  .toast.on { opacity: 1; translate: -50% 0; transition: opacity 260ms var(--ease-out), translate 260ms var(--ease-out); }
+
+
+
+
+
+  /* PDF style picker */
+  .style-pick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .sp { position: relative; display: grid; justify-items: center; gap: 8px; padding: 12px 8px; border-radius: 14px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted);
+    background: oklch(0.98 0.01 40 / 0.04); border: 1px solid var(--line); transition: border-color 160ms, background-color 160ms, color 160ms; }
+  .sp input { position: absolute; opacity: 0; pointer-events: none; }
+  .sp:has(input:checked) { border-color: oklch(0.67 0.2 28 / 0.7); background: var(--accent-lo); color: var(--text); }
+  .sp:has(input:focus-visible) { outline: 2px solid var(--accent-hi); }
+  .sw { display: flex; gap: 4px; }
+  .sw i { width: 16px; height: 16px; border-radius: 5px; }
+  .sp-color .sw i:nth-child(1) { background: #4f46e5; } .sp-color .sw i:nth-child(2) { background: #0d9488; } .sp-color .sw i:nth-child(3) { background: #d97706; }
+  .sp-red .sw i:nth-child(1) { background: #e5322d; } .sp-red .sw i:nth-child(2) { background: #f08a86; } .sp-red .sw i:nth-child(3) { background: #b91c1c; }
+  .sp-bw .sw i:nth-child(1) { background: #111; border: 1px solid #555; } .sp-bw .sw i:nth-child(2) { background: #888; } .sp-bw .sw i:nth-child(3) { background: #eee; }
+
+  /* ---------- share + reviews ---------- */
+  .nav-r { display: flex; align-items: center; gap: 8px; }
+  .share-btn { cursor: pointer; color: var(--text); font-weight: 600; transition: background-color 150ms, translate 180ms var(--ease-quart); }
+  .share-btn:hover { background: oklch(0.98 0.01 40 / 0.1); }
+  .share-btn:active { translate: 0 1px; }
+  .share-btn svg { width: 15px; height: 15px; }
+  .rv-grid { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 28px; align-items: start; }
+  .rv-sum { padding: 26px; position: sticky; top: 24px; }
+  .rv-big { display: flex; align-items: baseline; gap: 8px; margin-top: 10px; }
+  .rv-big b { font-size: 76px; font-weight: 650; letter-spacing: -0.05em; line-height: 1; }
+  .rv-big span { color: var(--faint); font-size: 18px; }
+  .stars.lg svg { width: 22px; height: 22px; }
+  .rv-count { color: var(--muted); font-size: 14px; margin-top: 6px; }
+  .dist { display: grid; gap: 7px; margin-top: 20px; }
+  .dist .dr { display: grid; grid-template-columns: 30px 1fr 30px; gap: 10px; align-items: center; font-size: 13px; color: var(--muted); }
+  .dist .dr i { display: block; height: 7px; border-radius: 4px; background: oklch(0.98 0.01 40 / 0.08); overflow: hidden; }
+  .dist .dr i b { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), oklch(0.78 0.15 60)); transition: width 900ms var(--ease-out); }
+  .dist .dr span:last-child { text-align: right; color: var(--faint); }
+  .rv-main h2 { font-size: clamp(34px, 4.4vw, 56px); letter-spacing: -0.04em; line-height: 1; font-weight: 650; }
+  .rv-main h2 em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; color: var(--accent-hi); }
+  .wall { columns: 2 280px; column-gap: 14px; margin-top: 26px; }
+  .rv { position: relative; overflow: hidden; }
+  .rv .qm { position: absolute; right: 16px; top: 12px; width: 34px; height: 34px; color: oklch(0.67 0.2 28 / 0.18); }
+  .rv .kind { font-size: 11px; font-weight: 600; letter-spacing: .04em; padding: 2px 8px; border-radius: 99px; background: var(--accent-lo); color: var(--accent-hi); }
+  .rv-empty { margin-top: 26px; padding: 44px 28px; display: grid; justify-items: center; gap: 8px; text-align: center; }
+  .rv-empty svg { width: 64px; height: 64px; color: var(--gold); opacity: .8; filter: drop-shadow(0 0 18px oklch(0.85 0.14 80 / 0.35)); animation: breathe 3.2s ease-in-out infinite; }
+  .rv-empty b { font-size: 22px; letter-spacing: -0.02em; margin-top: 6px; }
+  .rv-empty span { color: var(--faint); margin-bottom: 10px; }
+  .rv-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .star-word { font-size: 14px; color: var(--gold); font-weight: 600; min-height: 1.2em; }
+  .stars-in svg { width: 36px; height: 36px; }
+  .ta { position: relative; }
+  .ta span { position: absolute; right: 10px; bottom: 8px; font-size: 11px; color: var(--faint); }
+  #rvSend { justify-self: start; }
+  @media (max-width: 900px) { .rv-grid { grid-template-columns: 1fr; } .rv-sum { position: static; } }
+
+  /* ---------- clickable demo ---------- */
+  .demo { justify-self: end; width: min(470px, 100%); perspective: 1400px; }
+  .d-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .d-badge { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-hi); padding: 5px 10px; border-radius: 99px;
+    background: var(--accent-lo); border: 1px solid oklch(0.67 0.2 28 / 0.35); }
+  .d-tabs { display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--line); }
+  .d-tabs button { border: 0; background: none; cursor: pointer; padding: 7px 12px; border-radius: 9px; font-size: 13px; font-weight: 500; color: var(--muted);
+    transition: background-color 160ms var(--ease-quart), color 160ms; }
+  .d-tabs button:hover { color: var(--text); }
+  .d-tabs button[aria-selected="true"] { background: var(--surface-3); color: var(--text); box-shadow: var(--hi); }
+  .paper-d { background: #faf6f4; color: #1d1716; border-radius: 14px; padding: 22px 22px 18px; transform: rotateY(-7deg) rotateX(3deg); transform-origin: left center;
+    transition: transform 600ms var(--ease-out);
+    box-shadow: 0 2px 4px oklch(0.05 0.01 28 / 0.4), 0 30px 70px -20px oklch(0.05 0.01 28 / 0.9), 0 50px 120px -40px oklch(0.5 0.18 28 / 0.45); }
+  .demo:hover .paper-d { transform: rotateY(-2deg) rotateX(1deg); }
+  .pd-head { display: flex; gap: 12px; align-items: center; padding-bottom: 12px; border-bottom: 2px solid #e5322d; }
+  .pd-thumb { width: 74px; height: 46px; flex: none; border-radius: 6px; background: linear-gradient(160deg, #23302b, #121a17); overflow: hidden; }
+  .pd-thumb svg { width: 100%; height: 100%; display: block; }
+  .pd-eye { font-size: 9px; letter-spacing: .14em; font-weight: 700; color: #e5322d; }
+  .pd-title { font-size: 17px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
+  .pd-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+  .pd-chips span { font-size: 10px; padding: 2px 7px; border-radius: 99px; background: #efe9e7; color: #5a4f4c; }
+  .pd-chips span:first-child { background: #fde9e6; color: #e5322d; font-weight: 600; }
+  .d-viewport { overflow: hidden; margin-top: 14px; }
+  .d-track { display: flex; transition: transform 520ms var(--ease-out); }
+  .d-page { flex: 0 0 100%; min-height: 268px; padding: 0; font-size: 13.5px; line-height: 1.5; }
+  .pd-short { background: #fdeeeb; border-left: 3px solid #e5322d; border-radius: 0 8px 8px 0; padding: 10px 13px; }
+  .pd-short b, .pd-sum b, .pd-cornell aside b, .pd-card .lbl { display: block; font-size: 9.5px; letter-spacing: .12em; color: #e5322d; text-transform: uppercase; margin-bottom: 3px; font-weight: 700; }
+  .pd-h { font-weight: 700; font-size: 14.5px; margin: 14px 0 8px; }
+  .pd-h small { color: #e5322d; font-weight: 500; font-size: 11px; margin-left: 6px; }
+  .d-page > .pd-h:first-child { margin-top: 2px; }
+  .pd-cards { list-style: none; display: grid; gap: 7px; counter-reset: c; }
+  .pd-cards li { position: relative; background: #f2edeb; border-radius: 9px; padding: 9px 11px 9px 36px; }
+  .pd-cards li::before { counter-increment: c; content: counter(c); position: absolute; left: 10px; top: 9px; width: 18px; height: 18px; border-radius: 50%; background: #e5322d;
+    color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; }
+  .pd-cornell { display: grid; grid-template-columns: 38% 1fr; gap: 12px; }
+  .pd-cornell aside { background: #f2edeb; border-radius: 9px; padding: 10px 11px; font-size: 12.5px; color: #4a403d; }
+  .pd-cornell aside ol { padding-left: 15px; display: grid; gap: 5px; }
+  .pd-cornell ul { list-style: none; display: grid; gap: 8px; }
+  .pd-cornell ul li { display: grid; grid-template-columns: 38px 1fr; gap: 6px; }
+  .ts { font: 600 10.5px ui-monospace, "SF Mono", monospace; color: #e5322d; background: #fde9e6; border-radius: 4px; padding: 2px 4px; height: fit-content; text-align: center; }
+  .pd-sum { border-top: 2px solid #1d1716; margin-top: 14px; padding-top: 7px; }
+  .pd-sum b { display: inline; margin-right: 6px; color: #1d1716; }
+  .pd-formula { border: 1px solid #ebe3e0; border-radius: 10px; padding: 13px 14px; display: grid; gap: 4px; }
+  .pd-formula .m { font-family: "Instrument Serif", serif; font-size: 26px; letter-spacing: 0.01em; }
+  .pd-formula .m sup, .d-page sup { font-size: .62em; }
+  .pd-formula .l { font-size: 9.5px; letter-spacing: .1em; color: #8a7f7c; font-weight: 700; }
+  .pd-card { border: 1px solid #ebe3e0; border-radius: 10px; padding: 11px 13px; margin-top: 10px; }
+  .pd-card .lbl { color: #8a7f7c; }
+  .pd-card ol { padding-left: 18px; margin: 5px 0; }
+  .pd-card .ans { font-weight: 700; color: #1b7a3a; }
+  .pd-warn { display: flex; gap: 8px; align-items: center; margin-top: 10px; font-size: 13px; }
+  .pd-warn i { width: 18px; height: 18px; border-radius: 50%; background: #f2b84b; color: #fff; font-style: normal; font-weight: 800; font-size: 11px; display: grid; place-items: center; flex: none; }
+  .pd-quiz { padding-left: 18px; display: grid; gap: 11px; }
+  .pd-quiz li span { display: block; font-weight: 600; }
+  .pd-quiz button { margin-top: 5px; border: 1px solid #e3d9d6; background: #fff; color: #1d1716; border-radius: 8px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: background-color 140ms, border-color 140ms; }
+  .pd-quiz button:hover { background: #fdeeeb; border-color: #f2b3aa; }
+  .pd-quiz em { display: none; font-style: normal; margin-top: 5px; color: #1b7a3a; font-weight: 600; }
+  .pd-quiz li.open button { display: none; } .pd-quiz li.open em { display: block; animation: rise 320ms var(--ease-out) both; }
+  .d-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 14px; }
+  .d-arrow { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    color: var(--text); font-size: 22px; line-height: 1; cursor: pointer; display: grid; place-items: center; padding-bottom: 3px; transition: background-color 150ms, translate 180ms var(--ease-quart); }
+  .d-arrow:hover { background: oklch(0.98 0.01 40 / 0.12); }
+  .d-arrow:active { translate: 0 1px; }
+  .d-dots { display: flex; gap: 7px; }
+  .d-dots i { width: 7px; height: 7px; border-radius: 99px; background: oklch(0.98 0.01 40 / 0.25); transition: width 300ms var(--ease-out), background-color 200ms; }
+  .d-dots i.on { width: 22px; background: var(--accent); }
+  @media (max-width: 900px) { .demo { justify-self: stretch; width: 100%; margin-top: 30px; } .paper-d { transform: none; } }
+  @media (max-width: 560px) { .paper-d { padding: 16px; } .d-page { font-size: 13px; min-height: 300px; } .pd-cornell { grid-template-columns: 1fr; } .d-tabs button { padding: 7px 9px; } }
+
+  /* ---------- queue page ---------- */
+  .loader .prog, .loader .prog-track { fill: none; stroke-width: 4; opacity: 0; transition: opacity 400ms; }
+  .loader .prog-track { stroke: oklch(0.98 0.01 40 / 0.08); }
+  .loader .prog { stroke: url(#ringGrad); stroke-linecap: round; transform: rotate(-90deg); transform-origin: 110px 110px;
+    transition: stroke-dashoffset 900ms var(--ease-out), opacity 400ms; filter: drop-shadow(0 0 8px oklch(0.67 0.2 28 / 0.7)); }
+  #qpage.mode-run, #qpage.mode-done { grid-template-columns: minmax(0, 680px); justify-content: center; text-align: center; }
+  #qpage.mode-run .board, #qpage.mode-done .board { display: none; }
+  #qpage.mode-run .q-left, #qpage.mode-done .q-left { position: static; display: flex; flex-direction: column; align-items: center; }
+  #qpage.mode-run .loader, #qpage.mode-done .loader { width: 300px; height: 300px; margin: 6px auto 14px; }
+  #qpage.mode-run .loader .prog, #qpage.mode-run .loader .prog-track { opacity: 1; }
+  #qpage.mode-run .q-time, #qpage.mode-done .q-time { font-size: clamp(72px, 10vw, 128px); }
+  #qpage.mode-run .ticket, #qpage.mode-done .ticket { width: 100%; text-align: left; }
+  .timeline { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; }
+  .timeline .tl { position: relative; padding-top: 16px; text-align: center; font-size: 13px; color: var(--faint); }
+  .timeline .tl::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px; border-radius: 3px; background: oklch(0.98 0.01 40 / 0.1); }
+  .timeline .tl.done { color: var(--muted); } .timeline .tl.done::before { background: var(--ok); }
+  .timeline .tl.now { color: var(--text); font-weight: 600; }
+  .timeline .tl.now::before { background: linear-gradient(90deg, var(--accent), var(--accent-hi), var(--accent)); background-size: 200% 100%; animation: flowbar 1.6s linear infinite; }
+  @keyframes flowbar { to { background-position: -200% 0; } }
+  .behind { margin-top: 14px; font-size: 13px; color: var(--faint); text-align: center; }
+  body.on-q .hero, body.on-q #reviews, body.on-q #steps { display: none; }
+  #qpage { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: 34px; align-items: start; padding: 26px 0 40px; min-height: calc(100vh - 160px); }
+  .q-left { position: sticky; top: 24px; }
+  .loader { position: relative; width: 210px; height: 210px; margin: 0 0 6px -12px; }
+  .loader::before { content: ""; position: absolute; inset: 18%; border-radius: 50%; background: radial-gradient(circle, oklch(0.67 0.2 28 / 0.55), transparent 70%); filter: blur(18px); animation: breathe 2.6s ease-in-out infinite; }
+  .loader svg { position: relative; width: 100%; height: 100%; overflow: visible; }
+  .loader .check { fill: none; stroke: var(--ok); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 120; stroke-dashoffset: 120; filter: drop-shadow(0 0 10px oklch(0.8 0.13 150 / 0.6)); }
+  .loader #orbit { transition: opacity 600ms var(--ease-out); }
+  .loader.done #orbit { opacity: .22; }
+  .loader.done .check { transition: stroke-dashoffset 700ms var(--ease-out) 150ms; stroke-dashoffset: 0; }
+  .loader.done::before { background: radial-gradient(circle, oklch(0.8 0.13 150 / 0.45), transparent 70%); }
+  .loader.idle #orbit, .loader.idle::before { opacity: .3; animation-play-state: paused; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes breathe { 50% { opacity: .55; transform: scale(1.12); } }
+  .q-label { font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-hi); }
+  .q-time { font-size: clamp(64px, 8vw, 104px); font-weight: 650; letter-spacing: -0.05em; line-height: 0.95; margin-top: 6px; }
+  .q-sub { color: var(--muted); margin-top: 10px; font-size: 16px; }
+  #qpage .ticket { margin-top: 26px; }
+
+  .board { padding: 8px; }
+  .b-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 12px; }
+  .b-head b { font-size: 20px; letter-spacing: -0.02em; }
+  .b-head span { font-size: 13px; color: var(--muted); padding: 5px 11px; border-radius: 99px; background: oklch(0.98 0.01 40 / 0.06); border: 1px solid var(--line); }
+  .rows { list-style: none; display: grid; gap: 6px; }
+  .r { display: grid; grid-template-columns: 44px 42px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 16px;
+    background: oklch(0.98 0.01 40 / 0.035); border: 1px solid transparent; will-change: transform; }
+  .r .rank { font-size: 22px; font-weight: 650; letter-spacing: -0.03em; color: var(--faint); text-align: center; }
+  .r.p1 .rank { color: var(--accent-hi); } .r.p2 .rank, .r.p3 .rank { color: var(--muted); }
+  .r .av { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; font-weight: 700; font-size: 14px; color: #fff;
+    background: linear-gradient(135deg, oklch(0.62 0.16 var(--h)), oklch(0.38 0.11 calc(var(--h) - 30))); box-shadow: var(--hi); }
+  .r .who { min-width: 0; }
+  .r .who b { display: flex; align-items: center; gap: 8px; font-size: 15.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .r .who b em { font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; background: var(--accent); color: #fff; }
+  .r .who small { color: var(--faint); font-size: 13px; }
+  .r .bar { height: 5px; border-radius: 3px; background: oklch(0.98 0.01 40 / 0.08); margin-top: 7px; overflow: hidden; }
+  .r .bar i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, oklch(0.75 0.14 150), oklch(0.85 0.12 140)); transition: width 900ms var(--ease-out); box-shadow: 0 0 10px oklch(0.8 0.13 150 / 0.6); }
+  .r .when { text-align: right; }
+  .r .when b { display: block; font-size: 17px; font-weight: 650; letter-spacing: -0.02em; }
+  .r .when small { color: var(--faint); font-size: 12px; }
+  .r.working { background: oklch(0.8 0.13 150 / 0.06); border-color: oklch(0.8 0.13 150 / 0.22); }
+  .r.working .rank { color: var(--ok); }
+  .live-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px oklch(0.8 0.13 150 / 0.2); animation: blink 1.4s infinite; }
+  .r.me { background: linear-gradient(90deg, oklch(0.67 0.2 28 / 0.2), oklch(0.67 0.2 28 / 0.06)); border-color: oklch(0.67 0.2 28 / 0.5);
+    box-shadow: 0 0 0 1px oklch(0.67 0.2 28 / 0.25), 0 12px 30px -12px oklch(0.67 0.2 28 / 0.6); }
+  .r.me .rank { color: var(--text); }
+  .rows .gap { text-align: center; color: var(--faint); font-size: 13px; padding: 4px; }
+  .wait-row { display: flex; align-items: center; gap: 12px; color: var(--muted); }
+  .wait-row b { font-size: 34px; letter-spacing: -0.04em; color: var(--text); }
+  @media (max-width: 900px) { #qpage { grid-template-columns: 1fr; } .q-left { position: static; } }
+  @media (max-width: 560px) { #qpage.mode-run .loader, #qpage.mode-done .loader { width: 220px; height: 220px; } .timeline .tl { font-size: 11px; }
+    .loader { width: 160px; height: 160px; } .r { grid-template-columns: 30px 36px minmax(0, 1fr) auto; gap: 10px; padding: 10px; } .r .av { width: 36px; height: 36px; } .r .rank { font-size: 18px; } }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: 0; padding: 40px 0 30px; }
+    .l-haze { background: linear-gradient(180deg, transparent 0%, oklch(0.12 0.012 28 / 0.2) 30%, oklch(0.12 0.012 28 / 0.6) 75%); }
+    .steps3 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .wrap { width: calc(100% - 32px); }
+    .sub { font-size: 17px; }
+    .t-head { grid-template-columns: 72px minmax(0, 1fr) auto; }
+    .t-head img { width: 72px; }
+    .place .big { font-size: 72px; }
+    .work { grid-template-columns: 1fr; justify-items: start; }
+    .review .row { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-name: none !important; scroll-behavior: auto !important;
+      transition-property: opacity, color, background-color, border-color, fill, stroke !important; transition-duration: 150ms !important; }
+    [data-in], .pop { animation: fade 200ms both !important; }
+  }
+  @keyframes fade { from { opacity: 0; } }
+</style>
+</head>
+<body>
+<div class="l-base"></div>
+<canvas id="three" aria-hidden="true"></canvas>
+<div class="l-haze"></div>
+<div class="l-vignette"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="oklch(0.8 0.15 42)"/><stop offset="1" stop-color="oklch(0.6 0.21 22)"/></linearGradient>
+    <linearGradient id="grabGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="oklch(0.86 0.12 150)"/><stop offset="1" stop-color="oklch(0.68 0.14 165)"/></linearGradient>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-paste" viewBox="0 0 24 24"><path d="M9 4h6v3H9zM8 5.5H6.5A1.5 1.5 0 0 0 5 7v12.5A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V7a1.5 1.5 0 0 0-1.5-1.5H16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-notes" viewBox="0 0 24 24"><path d="M14 3H7.5A1.5 1.5 0 0 0 6 4.5v15A1.5 1.5 0 0 0 7.5 21h9a1.5 1.5 0 0 0 1.5-1.5V7zM14 3v4h4M9 12h6M9 15.5h4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h10M4 18h7" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+    <symbol id="i-queue" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.2" fill="currentColor"/><circle cx="12" cy="12" r="2.2" fill="currentColor" opacity=".6"/><circle cx="18" cy="12" r="2.2" fill="currentColor" opacity=".3"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.8" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-quote" viewBox="0 0 24 24"><path d="M9.5 6C6.5 7.3 5 9.6 5 12.8V18h5v-5H7.3c0-2 1-3.5 3-4.4zM18.5 6c-3 1.3-4.5 3.6-4.5 6.8V18h5v-5h-2.7c0-2 1-3.5 3-4.4z" fill="currentColor"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <nav>
+    <a class="brand" href="/" aria-label="GM Study Hall home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="8" fill="#e5322d"/><path d="M14.8 12.5A5 5 0 1 0 16.2 16.4H12.6" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.6 21V11.2l3.3 5.2 3.3-5.2V21" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span><b>GM</b> Study Hall</span>
+    </a>
+    <div class="nav-r">
+      <button class="live share-btn" id="shareBtn" type="button"><svg><use href="#i-share"/></svg>Share</button>
+      <span class="live num" id="live"><i></i><span>Queue open</span></span>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <h1 data-in style="--i:0">Watch less.<em>Learn more.</em></h1>
+      <p class="sub" data-in style="--i:1">Paste a link. Join the queue. Get your notes.</p>
+
+      <!-- join -->
+      <form class="card join" id="join" data-in style="--i:2" autocomplete="off">
+        <div class="seg" role="radiogroup" aria-label="What do you want?">
+          <label><input type="radio" name="kind" value="notes" checked><svg><use href="#i-notes"/></svg>Notes</label>
+          <label><input type="radio" name="kind" value="transcript"><svg><use href="#i-text"/></svg>Transcript</label>
+        </div>
+        <div class="field">
+          <svg class="ic" aria-hidden="true"><use href="#i-link"/></svg>
+          <label for="url" class="sr">YouTube link</label>
+          <input id="url" type="text" inputmode="url" placeholder="Paste a YouTube link">
+          <button type="button" class="btn btn-ghost btn-icon" id="paste" aria-label="Paste" title="Paste"><svg><use href="#i-paste"/></svg></button>
+        </div>
+        <button type="submit" class="btn btn-primary btn-big" id="go"><svg><use href="#i-queue"/></svg>Add me to queue</button>
+      </form>
+      <div class="under" id="under" data-in style="--i:3">
+        <label class="switch" title="For videos without subtitles. Slower."><input type="checkbox" id="listen">Listen instead</label>
+        <span class="wait-hint num" id="waitHint"></span>
+      </div>
+
+    </div>
+
+    <!-- A clickable sample of what you get: same look as the real PDF. -->
+    <div class="demo" id="demo" data-in style="--i:2">
+      <div class="d-top">
+        <span class="d-badge">Demo</span>
+        <div class="d-tabs" role="tablist" aria-label="Demo pages">
+          <button role="tab" aria-selected="true" data-p="0">Short</button>
+          <button role="tab" aria-selected="false" data-p="1">Notes</button>
+          <button role="tab" aria-selected="false" data-p="2">Formula</button>
+          <button role="tab" aria-selected="false" data-p="3">Quiz</button>
+        </div>
+      </div>
+      <div class="paper-d">
+        <div class="pd-head">
+          <div class="pd-thumb" aria-hidden="true"><svg viewBox="0 0 74 46"><path d="M6 38 C 22 38, 34 30, 44 18 S 62 6, 70 5" fill="none" stroke="#ff6b5b" stroke-width="2.2" stroke-linecap="round"/><path d="M30 34 L58 8" stroke="#f6e7c8" stroke-width="1.4" stroke-dasharray="3 3"/><circle cx="44" cy="18" r="2.6" fill="#f6e7c8"/></svg></div>
+          <div><div class="pd-eye">STUDY NOTES</div><div class="pd-title">Derivatives &amp; the power rule</div>
+            <div class="pd-chips"><span>Calculus I</span><span>Mathematics</span><span>Beginner</span><span>Lesson</span><span>18:24</span></div></div>
+        </div>
+        <div class="d-viewport">
+          <div class="d-track" id="dTrack">
+            <section class="d-page">
+              <div class="pd-short"><b>The short version</b>A derivative tells you how fast something is changing at one exact moment: the slope of the curve right there. For powers of <i>x</i>, the power rule gets it in one step.</div>
+              <div class="pd-h">Main points</div>
+              <ol class="pd-cards">
+                <li>The <b>derivative</b> is the slope of the tangent line at a point.</li>
+                <li>It's defined as a <b>limit</b>: the slope between two points as they slide together.</li>
+                <li><b>Power rule:</b> bring the exponent down, then subtract one from it.</li>
+              </ol>
+            </section>
+            <section class="d-page">
+              <div class="pd-h">2. From secant to tangent <small>3:40–9:55</small></div>
+              <div class="pd-cornell">
+                <aside><b>QUIZ YOURSELF</b><ol><li>What does f′(x) measure?</li><li>How is it defined?</li><li>What happens to constants?</li></ol></aside>
+                <ul>
+                  <li><span class="ts">3:52</span><span>A <b>secant</b> line through two points becomes the <b>tangent</b> as the gap <i>h</i> shrinks to 0.</span></li>
+                  <li><span class="ts">6:10</span><span>Definition: <b>f′(x) = lim<sub>h→0</sub> [f(x+h) − f(x)] / h</b>.</span></li>
+                  <li><span class="ts">9:05</span><span>A <b>constant</b> never changes, so its derivative is <b>0</b>.</span></li>
+                </ul>
+              </div>
+              <div class="pd-sum"><b>IN SHORT</b>Derivative = slope at an instant, found with a limit.</div>
+            </section>
+            <section class="d-page">
+              <div class="pd-formula"><span class="m"><i>d</i>/<i>dx</i> <i>x</i><sup><i>n</i></sup> = <i>n</i> · <i>x</i><sup><i>n</i>−1</sup></span><span class="l">POWER RULE · works for any real n</span></div>
+              <div class="pd-card"><div class="lbl">EXAMPLE, STEP BY STEP</div><b>Differentiate f(x) = 3x<sup>4</sup> − 5x + 2</b>
+                <ol><li>3x<sup>4</sup> → 3 · 4x<sup>3</sup> = 12x<sup>3</sup></li><li>−5x → −5 (x<sup>1</sup> becomes x<sup>0</sup> = 1)</li><li>2 → 0 (it's a constant)</li></ol>
+                <div class="ans">→ f′(x) = 12x<sup>3</sup> − 5</div></div>
+              <div class="pd-warn"><i>!</i>Bring the exponent down <b>first</b>, then subtract one. Not the other way round.</div>
+            </section>
+            <section class="d-page">
+              <div class="pd-h">Practice quiz <small>tap to check</small></div>
+              <ol class="pd-quiz">
+                <li><span>What is the derivative of x<sup>5</sup>?</span><button>Show answer</button><em>5x<sup>4</sup></em></li>
+                <li><span>What does f′(2) tell you?</span><button>Show answer</button><em>The slope of the curve at x = 2</em></li>
+                <li><span>Differentiate f(x) = 7.</span><button>Show answer</button><em>0, because a constant doesn't change</em></li>
+              </ol>
+            </section>
+          </div>
+        </div>
+      </div>
+      <div class="d-nav">
+        <button class="d-arrow" id="dPrev" aria-label="Previous page">‹</button>
+        <div class="d-dots" id="dDots"><i class="on"></i><i></i><i></i><i></i></div>
+        <button class="d-arrow" id="dNext" aria-label="Next page">›</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== queue page (/q/<ticket>) ===================== -->
+  <main id="qpage" class="hidden">
+    <div class="q-left">
+      <div class="loader" id="loader" aria-hidden="true">
+        <svg viewBox="0 0 220 220">
+          <defs>
+            <linearGradient id="arcA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="oklch(0.82 0.15 45)"/><stop offset="1" stop-color="oklch(0.6 0.21 22 / 0)"/></linearGradient>
+            <linearGradient id="arcB" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="oklch(0.7 0.2 28)"/><stop offset="1" stop-color="oklch(0.7 0.2 28 / 0)"/></linearGradient>
+          </defs>
+          <circle class="prog-track" cx="110" cy="110" r="108"/>
+          <circle class="prog" id="progRing" cx="110" cy="110" r="108" stroke-dasharray="678.58" stroke-dashoffset="678.58"/>
+          <g id="orbit"></g>
+          <path class="check" d="M78 112l22 22 42-46"/>
+        </svg>
+      </div>
+      <div class="q-label" id="qLabel">Queue time</div>
+      <div class="q-time num" id="qTime">--:--</div>
+      <div class="q-sub num" id="qSub"></div>
+      <div class="card ticket hidden" id="ticket" aria-live="polite">
+        <div class="t-head">
+          <img id="tThumb" alt="">
+          <div style="min-width:0"><b id="tTitle"></b><small><span class="tag" id="tKind"></span><span id="tLen" class="num"></span></small></div>
+          <button class="x" id="tLeave">Leave</button>
+        </div>
+        <div class="t-body" id="tBody"></div>
+        <form class="review hidden" id="review">
+          <div class="rv-top"><h3>How were your notes?</h3><span class="star-word" id="starWord">Tap a star</span></div>
+          <div class="stars-in" id="starsIn" role="radiogroup" aria-label="Stars"></div>
+          <input id="rvName" maxlength="40" placeholder="Your first name" required>
+          <div class="ta"><textarea id="rvText" maxlength="400" rows="3" placeholder="What did you use it for? (optional)"></textarea><span class="num" id="rvCount">0/400</span></div>
+          <button class="btn btn-primary" id="rvSend">Post review</button>
+        </form>
+      </div>
+    </div>
+    <div class="card board">
+      <div class="b-head"><b>In line</b><span class="num" id="bCount"></span></div>
+      <ol class="rows" id="rows"></ol>
+    </div>
+  </main>
+
+  <section id="reviews">
+    <div class="rv-grid">
+      <aside class="card rv-sum">
+        <div class="q-label">Reviews</div>
+        <div class="rv-big num"><b id="avgNum">–</b><span>/ 5</span></div>
+        <div class="stars lg" id="avgStars"></div>
+        <div class="rv-count num" id="avgCount">No reviews yet</div>
+        <div class="dist" id="dist"></div>
+      </aside>
+      <div class="rv-main">
+        <h2>What people <em>say</em></h2>
+        <div class="wall" id="wall"></div>
+        <div class="card rv-empty hidden" id="noReviews">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+          <b>No reviews yet</b><span>Make some notes, then be the first to rate them.</span>
+          <button class="btn btn-primary" id="firstReview" type="button">Make notes</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="steps">
+    <div class="steps3">
+      <div class="card st"><div class="n">1</div><div><b>Paste a link</b><span>Notes or transcript</span></div></div>
+      <div class="card st"><div class="n">2</div><div><b>Wait your turn</b><span>One at a time</span></div></div>
+      <div class="card st"><div class="n">3</div><div><b>Grab it</b><span>When it's ready, you get 3 minutes to download it</span></div></div>
+    </div>
+  </section>
+
+  <div class="foot"><span>GM Study Hall</span><span>AI notes can be wrong. Check the video.</span></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const KEY = "ytnotes:ticket";
+let tid = null, pollTimer = null, tick = null, last = null, expiresAt = 0, leftAt = 0, leftVal = null, stars = 0, yourWait = 0, yourAt = 0, qStart = 0;
+
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const stamp = t => { t = Math.floor(t); const h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
+  return h ? `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}` : `${m}:${String(s).padStart(2, "0")}`; };
+const mins = sec => sec < 50 ? "< 1 min" : sec < 3600 ? `${Math.round(sec / 60)} min` : `${Math.floor(sec / 3600)} h ${Math.round(sec % 3600 / 60)} min`;
+// Estimates are shown as rough minutes, never a fake to-the-second countdown.
+const est = (sec, done = "Almost done") => sec <= 8 ? done : sec < 60 ? "Under a minute" : sec < 3600 ? `~${Math.ceil(sec / 60)} min` : `~${Math.floor(sec / 3600)} h ${Math.round(sec % 3600 / 60)} min`;
+const ago = s => { const d = Date.now() / 1000 - s; return d < 3600 ? `${Math.max(1, Math.round(d / 60))}m ago` : d < 86400 ? `${Math.round(d / 3600)}h ago` : `${Math.round(d / 86400)}d ago`; };
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove("on"), 2000); }
+// localStorage can throw in private windows; everything still works for this tab.
+const store = { get: () => { try { return localStorage.getItem(KEY); } catch { return null; } },
+                set: v => { try { v ? localStorage.setItem(KEY, v) : localStorage.removeItem(KEY); } catch {} } };
+async function api(path, opts = {}) {
+  const r = await fetch(path, { headers: { "Content-Type": "application/json" }, ...opts });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.detail || "Something went wrong."); e.status = r.status; throw e; }
+  return j;
+}
+const starRow = (n, size = "") => `<span class="stars">${[1, 2, 3, 4, 5].map(i => `<svg class="${i > n ? "off" : ""}" ${size}><use href="#i-star"/></svg>`).join("")}</span>`;
+
+/* ---------------- queue size in the nav + under the form ---------------- */
+// The wait is fetched every 3 s and counted down every second in between, so it always moves.
+let qWait = 0, qLine = 0, qAt = 0;
+async function refreshQueue() {
+  try { const q = await api("/api/queue"); qWait = q.wait; qLine = q.in_line; qAt = Date.now(); paintQueue(); } catch {}
+}
+function paintQueue() {
+  const left = Math.max(0, qWait - (Date.now() - qAt) / 1000);
+  $("live").lastElementChild.textContent = qLine ? `${qLine} in queue · ${est(left, "almost free")}` : "Queue open";
+  $("waitHint").textContent = qLine ? `Wait now ${est(left, "under a minute")}` : "No wait";
+}
+refreshQueue(); setInterval(refreshQueue, 3000); setInterval(paintQueue, 1000);
+
+/* ---------------- join ---------------- */
+$("paste").onclick = async () => {
+  try { $("url").value = (await navigator.clipboard.readText()).trim(); $("url").focus(); }
+  catch { $("url").focus(); toast("Press Ctrl+V or ⌘V"); }
+};
+$("join").onsubmit = async e => {
+  e.preventDefault();
+  const url = $("url").value.trim();
+  if (!url) { $("url").focus(); toast("Paste a link first"); return; }
+  $("go").disabled = true;
+  try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); } catch {}
+  try {
+    const kind = document.querySelector('input[name="kind"]:checked').value;
+    const t = await api("/api/queue", { method: "POST", body: JSON.stringify({ url, kind, listen: $("listen").checked }) });
+    follow(t.id, t);
+  } catch (err) { toast(err.message); }
+  $("go").disabled = false;
+};
+
+/* ---------------- your ticket ---------------- */
+// Joining takes you to your own page, /q/<ticket>, with the line as a leaderboard.
+function follow(id, first) {
+  tid = id; store.set(id); last = null;
+  if (location.pathname !== `/q/${id}`) history.pushState(null, "", `/q/${id}`);
+  document.body.classList.add("on-q");
+  $("qpage").classList.remove("hidden"); $("ticket").classList.remove("hidden");
+  $("review").classList.add("hidden"); $("rows").innerHTML = "";
+  scrollTo({ top: 0 });
+  if (first) render(first);
+  clearInterval(pollTimer); pollTimer = setInterval(poll, 2000); poll();
+  clearInterval(tick); tick = setInterval(paintClock, 250);
+}
+function reset() {
+  clearInterval(pollTimer); clearInterval(tick); tid = null; store.set(null); last = null;
+  if (location.pathname !== "/") history.pushState(null, "", "/");
+  document.body.classList.remove("on-q"); $("qpage").classList.add("hidden");
+  $("loader").className = "loader";
+  document.title = "GM Study Hall · Watch less. Learn more.";
+  refreshQueue(); loadReviews();
+}
+addEventListener("popstate", () => location.reload());
+async function poll() {
+  if (!tid) return;
+  try { render(await api(`/api/ticket/${tid}`)); }
+  catch (err) { if (err.status === 404) { toast("That place in line expired."); reset(); return; } }
+  loadLine();
+}
+
+/* "it's ready": a soft three-note chime, plus a system notification when the tab is in the background */
+let audio = null;
+const unlockAudio = () => { try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); audio.resume(); } catch {} };
+addEventListener("pointerdown", unlockAudio); addEventListener("keydown", unlockAudio);
+function chime() {
+  try {
+    unlockAudio();
+    const now = audio.currentTime;
+    [659.25, 783.99, 1046.5].forEach((f, i) => {  // E5, G5, C6
+      const o = audio.createOscillator(), g = audio.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0, now + i * 0.16);
+      g.gain.linearRampToValueAtTime(0.18, now + i * 0.16 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.16 + 1.1);
+      o.connect(g).connect(audio.destination); o.start(now + i * 0.16); o.stop(now + i * 0.16 + 1.2);
+    });
+  } catch {}
+}
+function notifyOnce(t) {
+  const key = `ytnotes:told:${t.id}`;
+  try { if (localStorage.getItem(key)) return; localStorage.setItem(key, "1"); } catch {}
+  chime();
+  try {
+    if (document.hidden && "Notification" in window && Notification.permission === "granted")
+      new Notification(t.kind === "notes" ? "Your notes are ready" : "Your transcript is ready", { body: "You have 3 minutes to download it.", tag: t.id });
+  } catch {}
+}
+
+
+/* Loader: "Orbit Bundle" from Originkit (originkit.dev), ported to plain SVG. Nested rings share
+   one tilted axis and spin in 3D, each lagging the last so the bundle fans from circle to sliver.
+   It improvises: every few seconds it picks new random targets (tilt, fan, speed, direction,
+   ripple, offset, size) and glides toward them, so it never loops the same way. */
+const orbit = (() => {
+  const N = 22, R_OUT = 343, R_IN = 284, K = 0.29, g = $("orbit");
+  const rings = [];
+  for (let i = 0; i < N; i++) {
+    const t = i / (N - 1), r = (R_OUT + (R_IN - R_OUT) * t) * K;
+    const e = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+    e.setAttribute("fill", "none"); e.setAttribute("stroke-width", "1"); e.setAttribute("vector-effect", "non-scaling-stroke");
+    // coral on the outside fading to warm white inside
+    e.setAttribute("stroke", `color-mix(in oklch, oklch(0.7 0.2 30) ${Math.round((1 - t) * 100)}%, oklch(0.95 0.03 60))`);
+    e.setAttribute("stroke-opacity", "0");
+    g.appendChild(e); rings.push({ e, t, r });
+  }
+  const rnd = (lo, hi) => lo + Math.random() * (hi - lo);
+  // cur glides toward goal; goal is re-rolled every few seconds.
+  const cur = { axis: 24.7, spread: 68, speed: 1, dir: 1, ripple: 0, dx: 19, dy: -29, size: 1 };
+  const goal = { ...cur };
+  let nextRoll = 0;
+  const roll = now => {
+    goal.axis = rnd(-45, 75);
+    goal.spread = Math.random() < 0.2 ? rnd(140, 220) : rnd(18, 120);   // now and then a big fan-out
+    goal.speed = rnd(0.45, 1.9);
+    if (Math.random() < 0.28) goal.dir = -goal.dir;                       // sometimes turn around
+    goal.ripple = Math.random() < 0.45 ? rnd(8, 34) : 0;
+    goal.dx = rnd(-26, 30); goal.dy = rnd(-38, 16);
+    goal.size = rnd(0.86, 1.04);
+    nextRoll = now + rnd(2600, 6200);
+  };
+  let spin = 0, last = 0, start = 0, base = 1, hover = false;
+  $("loader").addEventListener("pointerenter", () => hover = true);
+  $("loader").addEventListener("pointerleave", () => hover = false);
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const frame = now => {
+    if (!start) { start = last = now; nextRoll = now + 2200; }
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    if (!still) {
+      if (now > nextRoll) roll(now);
+      const k = 1 - Math.exp(-dt * 0.9);                                  // smooth glide, no snapping
+      for (const key in cur) cur[key] += (goal[key] - cur[key]) * k;
+      spin = (spin + 18 * base * cur.speed * cur.dir * (hover ? 1.8 : 1) * dt) % 360;
+    }
+    const el = (now - start) / 1000, wave = el * 0.9;
+    for (const [i, { e, t, r }] of rings.entries()) {
+      const rr = r * cur.size, cx = 110 + cur.dx * t * K, cy = 110 + cur.dy * t * K;
+      const phi = (spin + cur.spread * t + cur.ripple * Math.sin(wave + t * 7)) * Math.PI / 180;
+      e.setAttribute("cx", cx.toFixed(2)); e.setAttribute("cy", cy.toFixed(2)); e.setAttribute("ry", rr.toFixed(2));
+      e.setAttribute("rx", (rr * Math.abs(Math.cos(phi))).toFixed(2));
+      e.setAttribute("transform", `rotate(${cur.axis.toFixed(2)} ${cx.toFixed(2)} ${cy.toFixed(2)})`);
+      e.setAttribute("stroke-opacity", Math.min(1, Math.max(0, (el - 0.1 - i * 0.035) / 0.5)).toFixed(3));  // staggered intro
+    }
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+  return { setSpeed: v => base = v };
+})();
+
+/* the line, as a leaderboard */
+let lineAt = 0;
+// Avatar colours stay in the brand's warm range: deep reds through ember orange to amber.
+const hue = name => 8 + [...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 997, 7) % 62;
+const initials = name => name.split(" ").map(w => w[0]).join("").slice(0, 2);
+async function loadLine() {
+  if (!tid) return;
+  let data;
+  try { data = await api(`/api/line/${tid}`); } catch { return; }
+  lineAt = Date.now();
+  $("bCount").textContent = data.total ? `${data.total} in queue` : "Nobody in line";
+  const ol = $("rows");
+  const before = new Map([...ol.children].map(li => [li.dataset.k, li.getBoundingClientRect().top]));
+  ol.innerHTML = data.rows.length ? data.rows.map(r => {
+    const work = r.state === "working";
+    const t = work ? r.done_in : r.starts_in;
+    return `<li class="r ${work ? "working" : `p${r.place}`} ${r.me ? "me" : ""}" data-k="${esc(r.name)}">
+      <span class="rank">${work ? '<i class="live-dot" title="Working on it now"></i>' : r.place}</span>
+      <span class="av" style="--h:${hue(r.name)}">${esc(initials(r.name))}</span>
+      <div class="who"><b>${esc(r.name)}${r.me ? "<em>You</em>" : ""}</b>
+        <small>${r.kind === "notes" ? "Notes" : "Transcript"}${r.length ? ` · ${Math.max(1, Math.round(r.length / 60))} min video` : ""}</small>
+        ${work ? `<div class="bar"><i style="width:${Math.max(3, Math.round((r.pct || 0) * 100))}%"></i></div>` : ""}</div>
+      <div class="when"><b class="num" data-t="${t}">${est(t, "Now")}</b><small>${work ? "est. done" : "est. start"}</small></div>
+    </li>`;
+  }).join("") : `<li class="gap">Nobody in line</li>`;
+  // FLIP: rows that moved slide from where they were; new rows fade in.
+  for (const li of ol.children) {
+    const was = before.get(li.dataset.k), now = li.getBoundingClientRect().top;
+    if (was == null) li.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 450, easing: "cubic-bezier(.16,1,.3,1)" });
+    else if (Math.abs(was - now) > 1) li.animate([{ transform: `translateY(${was - now}px)` }, { transform: "none" }], { duration: 700, easing: "cubic-bezier(.16,1,.3,1)" });
+  }
+}
+function tickLine() {
+  for (const b of document.querySelectorAll("#rows .when b")) b.textContent = est(+b.dataset.t - (Date.now() - lineAt) / 1000, "Now");
+}
+$("tLeave").onclick = async () => {
+  try { await api(`/api/ticket/${tid}`, { method: "DELETE" }); } catch {}
+  reset();
+};
+
+const STEPS = ["Words", "Topic", "Notes", "Quiz", "PDF"];
+function stepOf(stage) {
+  if (/words|sound|Listening/i.test(stage)) return [0, ""];
+  if (/^Figuring/.test(stage)) return [1, ""];
+  const m = stage.match(/part (\d+) of (\d+)/); if (m) return [2, ` ${m[1]}/${m[2]}`];
+  if (/^Writing the summary/.test(stage)) return [3, ""];
+  if (/^Designing/.test(stage)) return [4, ""];
+  return [-1, ""];
+}
+
+function render(t) {
+  const prev = last ? last.status : null;
+  last = t;
+  $("tThumb").src = t.thumbnail; $("tThumb").alt = t.title || "";
+  $("tTitle").textContent = t.title || "Loading video…";
+  $("tKind").textContent = t.kind === "notes" ? "Notes" : "Transcript";
+  $("tLen").textContent = t.duration ? stamp(t.duration) : "";
+  $("tLeave").textContent = t.status === "waiting" ? "Leave line" : "Close";
+  $("tLeave").classList.toggle("hidden", t.status === "running" || t.status === "ready");
+  const body = $("tBody");
+
+  const loader = $("loader");
+  loader.classList.toggle("done", t.status === "ready");
+  orbit.setSpeed(t.status === "running" ? 2.6 : t.status === "waiting" ? 1 : 0.4);
+  loader.classList.toggle("idle", !["waiting", "running", "ready"].includes(t.status));
+  $("qLabel").textContent = { waiting: "Queue time", running: "Estimated time", ready: "Ready · grab it within", expired: "Deleted", gone: "Left the line", error: "Something went wrong" }[t.status] || "";
+  $("qpage").className = t.status === "waiting" ? "mode-wait" : t.status === "running" ? "mode-run" : "mode-done";
+  if (t.status === "ready") notifyOnce(t);
+  if (!["waiting", "running", "ready"].includes(t.status)) { $("qTime").textContent = "0:00"; $("qSub").textContent = ""; }
+
+  if (t.status === "waiting") {
+    qStart = t.wait; yourWait = t.wait + t.needs; yourAt = Date.now();
+    body.innerHTML = `<div class="wait-row"><b class="num">#${t.position}</b><span>${t.position === 1 ? "You're next." : "in line."} Keep this page open.</span></div>`;
+    document.title = `#${t.position} in line · GM Study Hall`;
+  } else if (t.status === "running") {
+    leftVal = t.left; leftAt = Date.now();
+    const [now, sub] = stepOf(t.stage || "");
+    const steps = t.kind === "notes" ? STEPS : ["Words"];
+    const pct = Math.max(0.02, Math.min(0.99, t.pct || 0));
+    $("progRing").style.strokeDashoffset = 678.58 * (1 - pct);
+    const finish = new Date(Date.now() + (t.left || 0) * 1000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    $("qSub").textContent = `${Math.round(pct * 100)}% · ${t.stage || "Starting"} · done around ${finish}`;
+    body.innerHTML = `<div class="timeline" style="--n:${steps.length}">${steps.map((s, i) =>
+      `<span class="tl ${now < 0 ? "" : i < now ? "done" : i === now ? "now" : ""}">${s}${i === now ? sub : ""}</span>`).join("")}</div>`;
+    document.title = `${Math.round(pct * 100)}% · GM Study Hall`;
+  } else if (t.status === "ready") {
+    if (prev !== "ready") {
+      expiresAt = Date.now() + t.expires_in * 1000;
+      const pdfs = t.files.filter(f => f.name.endsWith(".pdf")), others = t.files.filter(f => !f.name.endsWith(".pdf"));
+      body.innerHTML = `
+        <div>${pdfs.length ? `
+          <div class="style-pick" role="radiogroup" aria-label="PDF style">${pdfs.map((f, i) => `
+            <label class="sp sp-${f.name.replace("notes-", "").replace(".pdf", "")}"><input type="radio" name="pdfStyle" value="${f.url}" ${i === 0 ? "checked" : ""}>
+              <span class="sw"><i></i><i></i><i></i></span>${f.label}</label>`).join("")}</div>` : ""}
+          <div class="files">
+            ${pdfs.length ? `<a class="btn btn-primary" id="pdfBtn" href="${pdfs[0].url}"><svg><use href="#i-down"/></svg>Download PDF</a>` : ""}
+            ${others.map(f => f.name.endsWith(".html")
+              ? `<a class="btn btn-ghost" href="${f.url}?download=0" target="_blank" rel="noopener"><svg><use href="#i-eye"/></svg>${f.label}</a>`
+              : `<a class="btn ${pdfs.length ? "btn-ghost" : "btn-primary"}" href="${f.url}"><svg><use href="#i-down"/></svg>${f.label}</a>`).join("")}
+            <button class="btn btn-ghost" id="copyBtn"><svg><use href="#i-copy"/></svg>Copy</button></div>
+          <div class="end-row"><button class="btn btn-ghost" id="nextVid"><svg><use href="#i-plus"/></svg>Get another video</button></div></div>`;
+      document.querySelectorAll('input[name="pdfStyle"]').forEach(r => r.onchange = () => { $("pdfBtn").href = r.value; });
+      $("nextVid").onclick = async () => { try { await api(`/api/ticket/${tid}`, { method: "DELETE" }); } catch {} reset(); $("url").focus(); };
+      $("copyBtn").onclick = async e => {
+        try { const f = t.files.find(x => x.name.endsWith(".txt")); await navigator.clipboard.writeText(await (await fetch(f.url + "?download=0")).text()); toast("Copied"); }
+        catch { toast("Couldn't copy"); }
+      };
+      if (!t.reviewed) showReview();
+    } else expiresAt = Date.now() + t.expires_in * 1000;
+    $("qSub").textContent = "Then it's deleted for good.";
+    document.title = "✓ Ready · GM Study Hall";
+  } else {
+    clearInterval(pollTimer);
+    const err = t.status === "error";
+    body.innerHTML = `<div class="gone"><div><b class="${err ? "err" : ""}">${err ? esc(t.error) : t.status === "gone" ? "You left the line." : "Deleted."}</b>
+      <p>${err ? "Nothing was kept." : "Files only live for 3 minutes."}</p></div>
+      <button class="btn btn-primary" id="again"><svg><use href="#i-plus"/></svg>${err ? "Try again" : "Add another"}</button></div>`;
+    $("again").onclick = reset;
+    $("tLeave").classList.add("hidden");
+    document.title = "GM Study Hall · Watch less. Learn more.";
+  }
+}
+function paintClock() {
+  if (!last) return;
+  tickLine();
+  const since = s0 => Math.max(0, s0 - (Date.now() - yourAt) / 1000);
+  if (last.status === "waiting") { $("qTime").textContent = est(since(qStart), "Any moment"); $("qSub").textContent = `#${last.position} in line · ready in ${est(since(yourWait))}`; }
+  if (last.status === "running" && leftVal != null) $("qTime").textContent = est(leftVal - (Date.now() - leftAt) / 1000);
+  if (last.status === "ready") $("qTime").textContent = stamp(Math.ceil(Math.max(0, (expiresAt - Date.now()) / 1000)));
+
+
+}
+
+/* ---------------- reviews ---------------- */
+const WORDS = ["Tap a star", "Not useful", "Meh", "Okay", "Good", "Loved it"];
+$("rvText").addEventListener("input", () => $("rvCount").textContent = `${$("rvText").value.length}/400`);
+function showReview() {
+  stars = 0;
+  $("starsIn").innerHTML = [1, 2, 3, 4, 5].map(i => `<button type="button" data-s="${i}" aria-label="${i} star${i > 1 ? "s" : ""}"><svg><use href="#i-star"/></svg></button>`).join("");
+  $("starsIn").querySelectorAll("button").forEach(b => {
+    b.onclick = () => { stars = +b.dataset.s; $("starWord").textContent = WORDS[stars]; $("starsIn").querySelectorAll("button").forEach(x => x.classList.toggle("on", +x.dataset.s <= stars)); };
+    b.onmouseenter = () => $("starsIn").querySelectorAll("button").forEach(x => x.classList.toggle("on", +x.dataset.s <= +b.dataset.s));
+  });
+  $("starsIn").onmouseleave = () => $("starsIn").querySelectorAll("button").forEach(x => x.classList.toggle("on", +x.dataset.s <= stars));
+  $("review").classList.remove("hidden");
+}
+$("review").onsubmit = async e => {
+  e.preventDefault();
+  if (!stars) { toast("Tap the stars"); return; }
+  $("rvSend").disabled = true;
+  try {
+    await api("/api/reviews", { method: "POST", body: JSON.stringify({ ticket: tid, name: $("rvName").value, stars, comment: $("rvText").value }) });
+    $("review").classList.add("hidden"); toast("Thanks for the review"); loadReviews();
+  } catch (err) { toast(err.message); }
+  $("rvSend").disabled = false;
+};
+async function loadReviews() {
+  try {
+    const r = await api("/api/reviews");
+    $("noReviews").classList.toggle("hidden", r.count > 0);
+    $("avgNum").textContent = r.count ? r.avg.toFixed(1) : "–";
+    $("avgStars").innerHTML = starRow(r.count ? Math.round(r.avg) : 0);
+    $("avgCount").textContent = r.count ? `${r.count} review${r.count > 1 ? "s" : ""}` : "No reviews yet";
+    const top = Math.max(1, ...Object.values(r.dist || {}));
+    $("dist").innerHTML = [5, 4, 3, 2, 1].map(n => { const c = (r.dist || {})[n] || 0;
+      return `<div class="dr"><span>${n} ★</span><i><b style="width:${(c / top) * 100}%"></b></i><span>${c}</span></div>`; }).join("");
+    $("wall").innerHTML = r.items.map(v => `
+      <article class="card rv"><svg class="qm"><use href="#i-quote"/></svg>${starRow(v.stars)}${v.comment ? `<p>${esc(v.comment)}</p>` : "<p></p>"}
+        <footer><span class="av" style="background:linear-gradient(135deg, oklch(0.62 0.16 ${hue(v.name)}), oklch(0.38 0.11 ${hue(v.name) - 30}))">${esc(v.name.trim()[0] || "?").toUpperCase()}</span>
+          <b>${esc(v.name)}</b><span class="kind">${v.kind === "notes" ? "Notes" : "Transcript"}</span><span>${ago(v.at)}</span></footer></article>`).join("");
+  } catch {}
+}
+loadReviews();
+
+
+/* ---------------- demo: click through a sample of the notes ---------------- */
+(() => {
+  const track = $("dTrack"), tabs = [...document.querySelectorAll(".d-tabs button")], dots = [...$("dDots").children];
+  let page = 0, auto = null;
+  const go = i => {
+    page = (i + 4) % 4;
+    track.style.transform = `translateX(${-100 * page}%)`;
+    tabs.forEach((b, k) => b.setAttribute("aria-selected", k === page));
+    dots.forEach((d, k) => d.classList.toggle("on", k === page));
+  };
+  const stop = () => { clearInterval(auto); auto = null; };
+  tabs.forEach(b => b.onclick = () => { stop(); go(+b.dataset.p); });
+  $("dPrev").onclick = () => { stop(); go(page - 1); };
+  $("dNext").onclick = () => { stop(); go(page + 1); };
+  document.querySelectorAll(".pd-quiz li").forEach(li => li.querySelector("button").onclick = () => { stop(); li.classList.add("open"); });
+  // Moves on by itself until someone touches it.
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) auto = setInterval(() => go(page + 1), 5200);
+  $("demo").addEventListener("pointerdown", stop);
+})();
+
+/* share: the phone/browser share sheet, or copy the link */
+$("shareBtn").onclick = async () => {
+  const data = { title: "GM Study Hall", text: "Turn any YouTube video into study notes with a practice quiz.", url: location.origin + "/" };
+  try { if (navigator.share) { await navigator.share(data); return; } } catch (e) { if (e.name === "AbortError") return; }
+  try { await navigator.clipboard.writeText(data.url); toast("Link copied"); } catch { toast(data.url); }
+};
+$("firstReview").onclick = () => { scrollTo({ top: 0, behavior: "smooth" }); setTimeout(() => $("url").focus(), 400); };
+
+/* open /q/<ticket> directly, or go back to your place after a refresh */
+(() => {
+  const m = location.pathname.match(/^\/q\/([0-9a-f]{32})$/), saved = store.get();
+  if (m) follow(m[1]); else if (saved) follow(saved);
+})();
+</script>
+
+<!-- ---------------- the 3D scene ---------------- -->
+<script type="module">
+// Background: real volumetric fog. Each pixel marches a ray through a 3D smoke field lit by
+// a red light, so the smoke has depth, soft self-shadowing and light shafts. It is drawn at
+// reduced resolution (fog is soft, upscaling hides nothing) and capped at 30 fps.
+import * as THREE from "three";
+
+const canvas = document.getElementById("three");
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const small = innerWidth < 900;
+let renderer = null;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" }); } catch {}
+if (renderer) {
+  const SCALE = small ? 0.38 : 0.5;
+  renderer.setPixelRatio(SCALE);
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const uniforms = {
+    uT: { value: 0 }, uRes: { value: new THREE.Vector2() }, uLight: { value: new THREE.Vector2(0.62, 0.15) },
+    uCam: { value: new THREE.Vector2() }, uScroll: { value: 0 },
+  };
+  const mat = new THREE.ShaderMaterial({
+    uniforms, depthWrite: false, depthTest: false,
+    defines: { STEPS: small ? 18 : 30, OCT: small ? 3 : 4 },
+    vertexShader: "varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}",
+    fragmentShader: `precision highp float;varying vec2 vUv;
+      uniform float uT,uScroll;uniform vec2 uRes,uLight,uCam;
+      float h(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
+      float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);
+        return mix(mix(mix(h(i),h(i+vec3(1,0,0)),f.x),mix(h(i+vec3(0,1,0)),h(i+vec3(1,1,0)),f.x),f.y),
+                   mix(mix(h(i+vec3(0,0,1)),h(i+vec3(1,0,1)),f.x),mix(h(i+vec3(0,1,1)),h(i+vec3(1,1,1)),f.x),f.y),f.z);}
+      float fbm(vec3 p){float v=0.,a=.55;for(int i=0;i<OCT;i++){v+=a*n3(p);p=p*2.03+vec3(1.7,9.2,3.1);a*=.48;}return v;}
+      float dens(vec3 p){
+        vec3 q=p*.62+vec3(uT*.04,-uT*.025,uT*.06);
+        float d=fbm(q+1.1*fbm(q*.6+uT*.02));           // warped billows
+        d=smoothstep(.52,.8,d);                         // crisp cloud edges, clear black air between
+        return d*smoothstep(-3.2,.5,p.y)*smoothstep(4.5,1.2,p.y); // thins out high and low
+      }
+      void main(){
+        vec2 uv=(vUv-.5)*vec2(uRes.x/uRes.y,1.);
+        vec3 ro=vec3(uCam.x*.6,uCam.y*.4-uScroll*1.4,-4.);
+        vec3 rd=normalize(vec3(uv,1.25));
+        vec3 L=vec3((uLight.x-.5)*uRes.x/uRes.y*7.,uLight.y*6.-uScroll*1.4,5.);   // the red light, behind the fog
+        float dither=h(vec3(gl_FragCoord.xy,uT));         // breaks up banding between steps
+        float stepLen=.42,t=.5+dither*stepLen,T=1.;vec3 col=vec3(0.);
+        for(int i=0;i<STEPS;i++){
+          vec3 p=ro+rd*t;
+          float d=dens(p);
+          if(d>.01){
+            vec3 toL=L-p;float dl=length(toL);toL/=dl;
+            float shadow=exp(-(dens(p+toL*.5)+dens(p+toL*1.2))*1.9); // smoke between this point and the light
+            float near=1./(1.+dl*dl*.11);                   // light falls off with distance
+            vec3 lit=vec3(1.,.14,.08)*near*shadow*4.2+vec3(.018,.003,.004);
+            float a=1.-exp(-d*stepLen*2.6);
+            col+=T*a*lit;T*=1.-a;
+            if(T<.03)break;
+          }
+          t+=stepLen;
+        }
+        // The light itself glowing through whatever smoke is in front of it.
+        float glow=pow(max(dot(rd,normalize(L-ro)),0.),180.)*1.6+pow(max(dot(rd,normalize(L-ro)),0.),12.)*.18;
+        col+=vec3(1.,.25,.14)*glow*T;
+        col=col/(1.+col);                                  // soft tone curve, no harsh clipping
+        col=pow(col,vec3(.92));
+        gl_FragColor=vec4(col,1.);
+      }`,
+  });
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
+  const size = () => { renderer.setSize(innerWidth, innerHeight, false); uniforms.uRes.value.set(innerWidth, innerHeight); };
+  size(); addEventListener("resize", size);
+
+  const aim = { x: 0, y: 0 }, cur = { x: 0, y: 0 };
+  addEventListener("pointermove", e => { aim.x = e.clientX / innerWidth - 0.5; aim.y = e.clientY / innerHeight - 0.5; }, { passive: true });
+  const t0 = performance.now();
+  let last = 0;
+  const frame = now => {
+    if (!document.hidden && now - last > 33) {
+      last = now;
+      cur.x += (aim.x - cur.x) * 0.06; cur.y += (aim.y - cur.y) * 0.06;
+      uniforms.uT.value = still ? 30 : (now - t0) / 1000 + 30;
+      uniforms.uCam.value.set(cur.x, -cur.y);
+      uniforms.uScroll.value = scrollY / innerHeight;
+      uniforms.uLight.value.set(innerWidth >= 900 ? 0.68 : 0.55, innerWidth >= 900 ? 0.18 : 0.3);
+      renderer.render(scene, camera);
+    }
+    if (!still) requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+  requestAnimationFrame(() => canvas.classList.add("on"));
+}
+</script>
+</body>
+</html>

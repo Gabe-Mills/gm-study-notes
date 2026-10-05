@@ -1,0 +1,26 @@
+// Live check: home (fog + demo), join -> /q/<id>, refresh resumes, chime on ready, then delete right away.
+import { chromium } from "playwright-core";
+const OUT = process.env.OUT, SITE = "https://youtubelink.gabemills.com/";
+const b = await chromium.launch({ channel: "chrome", args: ["--autoplay-policy=no-user-gesture-required"] });
+const errs = [];
+const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
+p.on("pageerror", e => errs.push(String(e)));
+await p.addInitScript(() => { window.__osc = 0; const C = window.AudioContext; if (!C) return;
+  const o = C.prototype.createOscillator; C.prototype.createOscillator = function () { window.__osc++; return o.call(this); }; });
+await p.goto(SITE); await p.waitForTimeout(4000);
+await p.screenshot({ path: `${OUT}/live-home.png` });
+await p.check("input[name=kind][value=transcript]", { force: true });
+await p.fill("#url", "https://youtu.be/jNQXAC9IVRw");
+await p.click("#go");
+await p.waitForURL(/\/q\/[0-9a-f]{32}$/);
+const path = new URL(p.url()).pathname;
+console.log("joined ->", path);
+await p.reload();
+console.log("after refresh still at", new URL(p.url()).pathname === path);
+await p.waitForFunction(() => document.getElementById("qpage").className === "mode-done", null, { timeout: 120000 });
+await p.waitForTimeout(1200);
+await p.screenshot({ path: `${OUT}/live-ready.png` });
+console.log("ready:", await p.textContent("#qLabel"), await p.textContent("#qTime"), "| buttons:", (await p.locator("#tBody .files a, #tBody .files button").allTextContents()).join(", "), "| chime oscillators:", await p.evaluate(() => window.__osc));
+await p.click("#tLeave"); await p.waitForTimeout(2500);
+console.log("after Delete now:", (await p.textContent("#tBody")).replace(/\s+/g, " ").trim().slice(0, 60), "| errors:", errs.length ? errs : "none");
+await b.close();

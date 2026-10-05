@@ -1,0 +1,10 @@
+# runtime data: tickets are deleted after 3 minutes, reviews and timings are server state
+data/
+.venv/
+__pycache__/
+server.log
+node_modules/
+.wrangler/
+# rendered marketing images (re-make with: node share/render.mjs)
+share/*.png
+.DS_Store
