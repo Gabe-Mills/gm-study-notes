@@ -646,6 +646,7 @@ a { color: inherit; text-decoration: none; }
 p { margin: 0; }
 .cover { display: flex; gap: 16px; align-items: center; }
 .cover img { width: 132px; border-radius: 8px; }
+.cover img.brandmark { width: 44px; height: 44px; border-radius: 11px; align-self: flex-start; }
 .eyebrow { font-size: 7.4pt; letter-spacing: .14em; text-transform: uppercase; color: %(accent)s; font-weight: 700; }
 h1 { font-size: 21pt; line-height: 1.15; margin: 3px 0 5px; letter-spacing: -.02em; }
 .meta { color: #7d7673; font-size: 8.6pt; }
@@ -781,6 +782,12 @@ PLAIN = {"intro": "Beginner", "intermediate": "Intermediate", "advanced": "Advan
          "news": "News", "review": "Review", "documentary": "Documentary"}
 
 
+def _logo_uri() -> str:
+    """Gabe's GM logo for the PDF cover, inlined so the PDF needs no network."""
+    f = Path(__file__).parent / "static" / "brand" / "gm-icon-192.png"
+    return f"data:image/png;base64,{base64.b64encode(f.read_bytes()).decode()}" if f.exists() else ""
+
+
 def render_html(nb: dict, theme: str = "color") -> str:
     th = THEMES.get(theme, THEMES["color"])
     v = nb["video"]
@@ -851,9 +858,9 @@ def render_html(nb: dict, theme: str = "color") -> str:
 
     return f"""<!doctype html><html><head><meta charset="utf-8"><title>{html.escape(v['title'])} — study notes</title>
 <style>{css}</style></head><body>
-<div class="cover">{thumb}<div><div class="eyebrow">Study notes</div><h1><a href="{url}">{html.escape(v['title'])}</a></h1>
+<div class="cover">{thumb}<div style="flex:1"><div class="eyebrow">Study notes</div><h1><a href="{url}">{html.escape(v['title'])}</a></h1>
 <div class="meta">{html.escape(v.get('channel') or '')} · {stamp(nb['duration'])} · {len(nb['sections'])} parts</div>
-<div class="chips">{chips}</div></div></div>
+<div class="chips">{chips}</div></div>{f'<img class="brandmark" src="{_logo_uri()}">' if _logo_uri() else ""}</div>
 <div class="short"><b class="k">The short version</b>{md_inline(nb['tldr'])}</div>
 <h2>Main points</h2><ol class="main">{takeaways}</ol>
 {"<h2>Most important to remember</h2><ul class='focus'>" + focus + "</ul>" if focus else ""}

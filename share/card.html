@@ -14,7 +14,7 @@
   .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 110% 90% at 60% 45%, transparent 50%, rgba(5, 2, 2, 0.85)); }
   .stage { position: absolute; inset: 0; }
   .brand { display: flex; align-items: center; gap: .45em; font-weight: 650; letter-spacing: -0.01em; }
-  .brand svg { width: 1.6em; height: 1.6em; }
+  .brand img { height: 2.1em; width: auto; mix-blend-mode: screen; margin-right: .1em; }
   .brand b { font-weight: 750; color: var(--accent-hi); }
   .brand span { font-weight: 500; }
   h1 { font-weight: 650; letter-spacing: -0.048em; line-height: .93; }
@@ -81,7 +81,7 @@
 
   body.icon .stage > :not(.mark) { display: none; }
   body.icon .mark { position: absolute; inset: 0; display: grid; place-items: center; }
-  body.icon .mark svg { width: 128px; height: 128px; filter: drop-shadow(0 8px 20px rgba(229, 50, 45, .6)); }
+  body.icon .mark img { width: 150px; height: 150px; border-radius: 34px; }
   body:not(.icon) .mark { display: none; }
 </style>
 </head>
@@ -89,8 +89,8 @@
 <canvas id="fog"></canvas>
 <div class="vignette"></div>
 <div class="stage">
-  <div class="mark"><svg viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" rx="8" fill="#e5322d"/><path d="M14.8 12.5A5 5 0 1 0 16.2 16.4H12.6" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.6 21V11.2l3.3 5.2 3.3-5.2V21" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  <div class="brand"><svg viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" rx="8" fill="#e5322d"/><path d="M14.8 12.5A5 5 0 1 0 16.2 16.4H12.6" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.6 21V11.2l3.3 5.2 3.3-5.2V21" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>GM</b> Study Notes</span></div>
+  <div class="mark"><img src="/static/brand/gm-logo-512.png" alt=""></div>
+  <div class="brand"><img src="/static/brand/gm-logo-wide.png" alt=""><span><b>GM</b> Study Notes</span></div>
   <h1>Watch less.<em>Learn more.</em></h1>
   <p class="sub">Turn any YouTube video into study notes with a practice quiz. Free, as a PDF.</p>
   <svg class="orbit" id="orbit" viewBox="0 0 220 220"></svg>
@@ -137,7 +137,7 @@ document.body.className = layout;
 <script type="module">
 // The site's own volumetric fog, rendered once at full resolution.
 import * as THREE from "three";
-const frag = await (await fetch("fog.frag")).text();
+const frag = await (await fetch("/share/fog.frag")).text();
 const canvas = document.getElementById("fog");
 const renderer = new THREE.WebGLRenderer({ canvas, preserveDrawingBuffer: true });
 renderer.setPixelRatio(1); renderer.setSize(innerWidth, innerHeight, false);
